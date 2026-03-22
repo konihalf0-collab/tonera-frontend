@@ -23,6 +23,24 @@ const TABS = [
   { id: 'admin',     label: 'АДМИН',     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
 ]
 
+function getStartParam() {
+  const tg = window.Telegram?.WebApp
+
+  // 1. Из Telegram initDataUnsafe (основной способ)
+  const tgParam = tg?.initDataUnsafe?.start_param
+  if (tgParam) return tgParam
+
+  // 2. Из URL параметра ?start= (когда открыто через web_app кнопку с url?start=CODE)
+  const urlParam = new URLSearchParams(window.location.search).get('start')
+  if (urlParam) return urlParam
+
+  // 3. Из hash параметра #start=CODE
+  const hashParam = new URLSearchParams(window.location.hash.replace('#', '')).get('start')
+  if (hashParam) return hashParam
+
+  return null
+}
+
 export default function App() {
   const [tab, setTab] = useState('home')
   const { user, setUser } = useUserStore()
@@ -31,11 +49,14 @@ export default function App() {
     const tg = window.Telegram?.WebApp
     if (tg) { tg.ready(); tg.expand() }
 
+    const startParam = getStartParam()
+
     authLogin().then(async r => {
       setUser(r.data.user)
-      const startParam = tg?.initDataUnsafe?.start_param
       if (startParam) {
-        try { await api.post('/api/referrals/apply', { ref_code: startParam }) } catch {}
+        try {
+          await api.post('/api/referrals/apply', { ref_code: startParam })
+        } catch {}
       }
     }).catch(() => setUser({ balance_ton: 0, username: 'Пользователь' }))
   }, [])
