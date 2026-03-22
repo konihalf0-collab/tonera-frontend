@@ -1,0 +1,257 @@
+.wallet {
+  padding: 16px 16px 24px;
+}
+
+/* Balance card */
+.wallet-balance-card {
+  position: relative;
+  background: linear-gradient(135deg, #0a1628 0%, #0d1f2d 100%);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 20px;
+  padding: 24px 20px 20px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+
+.wb-glow {
+  position: absolute;
+  top: -50px;
+  left: -50px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.wb-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.wb-amount {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.wb-value {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.wb-currency {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent2);
+}
+
+.wb-usd {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.wb-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.wb-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  border: none;
+}
+.wb-btn:active { transform: scale(0.97); }
+
+.wb-btn-primary {
+  background: var(--accent2);
+  color: #fff;
+}
+
+.wb-btn-ghost {
+  background: rgba(59,130,246,0.1);
+  color: var(--accent2);
+  border: 1px solid rgba(59,130,246,0.2);
+}
+
+/* Wallet form */
+.wallet-form {
+  margin-bottom: 16px;
+}
+
+.wf-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.wf-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.wf-address {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--accent2);
+  word-break: break-all;
+  margin-bottom: 12px;
+  font-family: monospace;
+}
+
+/* Stake input reuse */
+.stake-input-wrap {
+  position: relative;
+}
+
+.stake-input {
+  width: 100%;
+  padding: 13px 52px 13px 14px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.stake-input:focus { border-color: var(--accent2); }
+.stake-input::placeholder { color: var(--text-muted); font-weight: 400; }
+
+.stake-input-currency {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent2);
+}
+
+/* Transactions */
+.tx-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.tx-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tx-tab {
+  padding: 5px 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tx-tab.active {
+  background: var(--accent-dim);
+  border-color: var(--border-active);
+  color: var(--accent);
+}
+
+/* TX list */
+.tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tx-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tx-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.tx-info {
+  flex: 1;
+}
+
+.tx-label {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+
+.tx-date {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.tx-amount {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tx-amount.positive { color: var(--success); }
+.tx-amount.negative { color: var(--danger); }
+
+/* Empty state shared */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  gap: 8px;
+}
+.empty-icon { font-size: 40px; }
+.empty-text {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
