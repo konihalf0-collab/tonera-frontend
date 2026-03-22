@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react'
 import { getReferrals } from '../../api/index'
 import './Referrals.css'
 
+const BOT_USERNAME = import.meta.env.VITE_BOT_USERNAME || 'tonera_bot'
+
 export default function Referrals({ user }) {
   const [refs, setRefs] = useState([])
   const [copied, setCopied] = useState(false)
 
-  const refLink = user?.ref_code ? `https://t.me/ToneraBot?start=${user.ref_code}` : 'https://t.me/ToneraBot?start=demo'
+  const refLink = user?.ref_code
+    ? `https://t.me/${BOT_USERNAME}?start=${user.ref_code}`
+    : `https://t.me/${BOT_USERNAME}`
 
   useEffect(() => {
     getReferrals().then(r => setRefs(r.data)).catch(() => {})
@@ -43,7 +47,7 @@ export default function Referrals({ user }) {
 
       <div className="hiw-card">
         <div className="hiw-title">КАК ЭТО РАБОТАЕТ</div>
-        {['Поделись реферальной ссылкой','Друг регистрируется в TonEra','Ты получаешь 0.5 TON мгновенно'].map((s,i) => (
+        {['Поделись реферальной ссылкой','Друг регистрируется в TonEra','Ты получаешь бонус мгновенно'].map((s,i) => (
           <div className="hiw-step" key={i}>
             <div className="hiw-num">{i+1}</div>
             <div className="hiw-txt">{s}</div>
@@ -57,7 +61,10 @@ export default function Referrals({ user }) {
           {refs.map((r, i) => (
             <div className="ref-item" key={i}>
               <div className="ref-avatar">{(r.username || r.first_name || '?')[0].toUpperCase()}</div>
-              <div className="ref-info"><div className="ref-name">{r.username || r.first_name || 'Пользователь'}</div><div className="ref-date">{new Date(r.created_at).toLocaleDateString('ru')}</div></div>
+              <div className="ref-info">
+                <div className="ref-name">{r.username || r.first_name || 'Пользователь'}</div>
+                <div className="ref-date">{new Date(r.created_at).toLocaleDateString('ru')}</div>
+              </div>
               <div className="ref-bonus">+0.5 TON</div>
             </div>
           ))}
