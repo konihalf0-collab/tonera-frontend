@@ -2,15 +2,47 @@ import { useState, useEffect, useRef } from 'react'
 import api from '../../api/index'
 import './Admin.css'
 
+const SETTING_GROUPS = [
+  {
+    id: 'staking',
+    title: '📈 Стейкинг',
+    settings: [
+      { key: 'min_deposit',  label: 'Минимальный депозит (TON)' },
+      { key: 'min_withdraw', label: 'Минимальный вывод (TON)' },
+      { key: 'min_reinvest', label: 'Минимальный реинвест (TON)' },
+    ]
+  },
+  {
+    id: 'tasks',
+    title: '✅ Задания',
+    settings: [
+      { key: 'task_reward',      label: 'Награда исполнителю (TON)' },
+      { key: 'task_price',       label: 'Цена для заказчика (TON)' },
+      { key: 'task_ref_bonus',   label: 'Реф. бонус за задание (TON)' },
+      { key: 'task_project_fee', label: 'Комиссия проекта (TON)' },
+    ]
+  },
+  {
+    id: 'referrals',
+    title: '👥 Рефералы',
+    settings: [
+      { key: 'ref_register_bonus',  label: 'Бонус за регистрацию (TON)' },
+      { key: 'ref_task_percent',    label: '% от задания реферала' },
+      { key: 'ref_deposit_percent', label: '% от депозита реферала' },
+    ]
+  },
+]
+
 export default function Admin() {
   const [tab, setTab] = useState('stats')
+  const [settingsTab, setSettingsTab] = useState('staking')
   const [stats, setStats] = useState(null)
   const [settings, setSettings] = useState({})
   const [tasks, setTasks] = useState([])
   const [users, setUsers] = useState([])
   const [toast, setToast] = useState('')
   const [toastErr, setToastErr] = useState(false)
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving] = useState(null)
   const [loadingChannel, setLoadingChannel] = useState(false)
   const [form, setForm] = useState({ title:'', link:'', type:'subscribe', icon:'✈️', channel_title:'', channel_photo:'' })
   const [confirmDelete, setConfirmDelete] = useState(null)
@@ -39,12 +71,12 @@ export default function Admin() {
   }
 
   const saveSetting = async (key) => {
-    setSaving(true)
+    setSaving(key)
     try {
       await api.post('/api/admin/settings', { key, value: settings[key] })
-      showToast('СОХРАНЕНО')
+      showToast('СОХРАНЕНО ✓')
     } catch { showToast('ОШИБКА', true) }
-    setSaving(false)
+    setSaving(null)
   }
 
   const handleLinkChange = (link) => {
@@ -65,7 +97,7 @@ export default function Admin() {
     if (!form.title.trim()) { showToast('ВВЕДИ НАЗВАНИЕ', true); return }
     try {
       await api.post('/api/admin/tasks', form)
-      showToast('ЗАДАНИЕ ДОБАВЛЕНО')
+      showToast('ЗАДАНИЕ ДОБАВЛЕНО ✓')
       setForm({ title:'', link:'', type:'subscribe', icon:'✈️', channel_title:'', channel_photo:'' })
       const r = await api.get('/api/admin/tasks')
       setTasks(r.data)
@@ -105,11 +137,12 @@ export default function Admin() {
     } catch { showToast('ОШИБКА', true) }
   }
 
+  const currentGroup = SETTING_GROUPS.find(g => g.id === settingsTab)
+
   return (
     <div className="admin-wrap">
       {toast && <div className={`admin-toast ${toastErr ? 'err' : ''}`}>{toast}</div>}
 
-      {/* Confirm delete modal */}
       {confirmDelete && (
         <div className="confirm-overlay" onClick={() => setConfirmDelete(null)}>
           <div className="confirm-modal" onClick={e => e.stopPropagation()}>
@@ -126,11 +159,11 @@ export default function Admin() {
 
       <div className="admin-header">
         <div className="admin-title">⚙️ Админ панель</div>
-        <div className="admin-only-note">🔒 Видно только администратору</div>
+        <div className="admin-only-note">🔒 Только для администратора</div>
       </div>
 
       <div className="admin-tabs">
-        {[{id:'stats',label:'СТАТ'},{id:'settings',label:'НАСТРОЙКИ'},{id:'tasks',label:'ЗАДАНИЯ'},{id:'users',label:'ЮЗЕРЫ'}].map(t => (
+        {[{id:'stats',label:'📊 СТАТ'},{id:'settings',label:'⚙️ НАСТРОЙКИ'},{id:'tasks',label:'✅ ЗАДАНИЯ'},{id:'users',label:'👥 ЮЗЕРЫ'}].map(t => (
           <button key={t.id} className={`atab ${tab===t.id?'on':''}`} onClick={() => setTab(t.id)}>{t.label}</button>
         ))}
       </div>
@@ -142,7 +175,7 @@ export default function Admin() {
             <div className="astat-card"><div className="astat-val">{stats.total_users}</div><div className="astat-lbl">Пользователей</div></div>
             <div className="astat-card"><div className="astat-val">{stats.blocked_users}</div><div className="astat-lbl">Заблокировано</div></div>
             <div className="astat-card"><div className="astat-val">{stats.active_stakes}</div><div className="astat-lbl">Стейков</div></div>
-            <div className="astat-card"><div className="astat-val">{parseFloat(stats.total_staked).toFixed(2)}</div><div className="astat-lbl">TON в стейке</div></div>
+            <div className="astat-card"><div className="astat-val">{parseFloat(stats.total_staked).toFixed(4)}</div><div className="astat-lbl">TON в стейке</div></div>
             <div className="astat-card"><div className="astat-val">{stats.total_referrals}</div><div className="astat-lbl">Рефералов</div></div>
             <div className="astat-card"><div className="astat-val">{stats.tasks_completed}</div><div className="astat-lbl">Заданий выполнено</div></div>
           </div>
@@ -153,28 +186,39 @@ export default function Admin() {
       {/* SETTINGS */}
       {tab === 'settings' && (
         <div className="admin-section">
-          {[
-            { key:'task_reward',         label:'Награда за задание (TON)' },
-            { key:'task_price',          label:'Цена для заказчика (TON)' },
-            { key:'task_ref_bonus',      label:'Реф. бонус за задание (TON)' },
-            { key:'task_project_fee',    label:'Комиссия проекта (TON)' },
-            { key:'ref_register_bonus',  label:'Бонус за регистрацию (TON)' },
-            { key:'ref_deposit_percent', label:'% от депозита реферала' },
-            { key:'min_deposit',          label:'Минимальный депозит (TON)' },
-            { key:'min_withdraw',         label:'Минимальный вывод (TON)' },
-            { key:'min_reinvest',         label:'Минимальный реинвест (TON)' },
-          ].map(s => (
-            <div key={s.key} className="setting-group">
-              <div className="setting-label">{s.label}</div>
-              <div className="setting-row">
-                <input className="setting-input" type="number" step="0.0001"
-                  value={settings[s.key] || ''}
-                  onChange={e => setSettings(p => ({...p, [s.key]: e.target.value}))}
-                />
-                <button className="save-btn" onClick={() => saveSetting(s.key)}>{saving ? '...' : 'СОХР'}</button>
-              </div>
+          <div className="settings-tabs">
+            {SETTING_GROUPS.map(g => (
+              <button key={g.id} className={`stab ${settingsTab===g.id?'on':''}`} onClick={() => setSettingsTab(g.id)}>
+                {g.title}
+              </button>
+            ))}
+          </div>
+
+          {currentGroup && (
+            <div className="settings-group-card">
+              <div className="sg-title">{currentGroup.title}</div>
+              {currentGroup.settings.map(s => (
+                <div key={s.key} className="setting-item">
+                  <div className="setting-label">{s.label}</div>
+                  <div className="setting-row">
+                    <input
+                      className="setting-input"
+                      type="number"
+                      step="0.0001"
+                      value={settings[s.key] ?? ''}
+                      onChange={e => setSettings(p => ({...p, [s.key]: e.target.value}))}
+                    />
+                    <button
+                      className="save-btn"
+                      onClick={() => saveSetting(s.key)}
+                    >
+                      {saving === s.key ? '...' : 'СОХР'}
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       )}
 
@@ -210,6 +254,7 @@ export default function Admin() {
             <div className="atf-reward-info">Награда: <span>{settings.task_reward || '0.001'} TON</span></div>
             <button className="atf-add-btn" onClick={addTask}>+ ДОБАВИТЬ</button>
           </div>
+
           <div className="tasks-list">
             {tasks.length === 0 && <div className="no-tasks">Нет заданий</div>}
             {tasks.map(task => (
@@ -220,6 +265,7 @@ export default function Admin() {
                   <div className="ati-meta">
                     <span className={`ati-type ${task.type==='bot'?'type-bot':'type-sub'}`}>{task.type==='bot'?'БОТ':'ПОДПИСКА'}</span>
                     <span className="ati-reward">+{task.reward} TON</span>
+                    <span className="ati-exec">{task.executions || 0} выполнений</span>
                   </div>
                 </div>
                 <button className="ati-del" onClick={() => deleteTask(task.id)}>✕</button>
@@ -243,7 +289,7 @@ export default function Admin() {
                 </div>
                 <div className="aui-meta">ID: {u.telegram_id} · Рефов: {u.referral_count}</div>
               </div>
-              <div className="aui-balance">{parseFloat(u.balance_ton).toFixed(2)}</div>
+              <div className="aui-balance">{parseFloat(u.balance_ton).toFixed(4)}</div>
               <div className="aui-actions">
                 {u.is_blocked
                   ? <button className="aui-btn unblock" onClick={() => unblockUser(u)}>✓</button>
