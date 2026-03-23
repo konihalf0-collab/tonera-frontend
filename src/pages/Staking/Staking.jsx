@@ -112,7 +112,7 @@ export default function Staking({ user }) {
     setDep(newDep)
     showToast(`РЕИНВЕСТ +${v.toFixed(6)} TON`)
     try {
-      if (stakeId) await unstake(stakeId)
+      if (stakeId) await unstake(stakeId, 'Реинвестиция')
       const res = await createStake({ amount: newDep })
       if (res.data?.stake?.id) setStakeId(res.data.stake.id)
     } catch {}
