@@ -109,3 +109,5 @@
 .mt-stat:last-child{border-right:none;}
 .mt-stat span:first-child{font-size:10px;color:rgba(232,242,255,0.35);}
 .mt-stat span:last-child{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:#00d4ff;}
+.dist-divider{height:1px;background:rgba(26,95,255,0.15);margin:6px 0;}
+.dist-total{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4ff;}

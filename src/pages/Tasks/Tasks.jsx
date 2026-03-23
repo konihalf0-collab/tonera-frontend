@@ -31,8 +31,10 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
   const [creating, setCreating] = useState(false)
   const linkTimer = useRef(null)
 
+  const [pricing, setPricing] = useState({ task_price: 0.002, task_reward: 0.001, task_ref_bonus: 0.0005, task_project_fee: 0.0005 })
   const balance = parseFloat(user?.balance_ton ?? 0)
-  const totalCost = form.count * PRICE_PER
+  const pricePerExec = parseFloat(pricing.task_price)
+  const totalCost = form.count * pricePerExec
 
   const showToast = (msg, err=false) => {
     setToast(msg); setToastErr(err)
@@ -40,11 +42,25 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
   }
 
   useEffect(() => {
+    api.get('/api/admin/settings').then(r => {
+      const s = r.data || {}
+      setPricing({
+        task_price:       parseFloat(s.task_price      || 0.002),
+        task_reward:      parseFloat(s.task_reward     || 0.001),
+        task_ref_bonus:   parseFloat(s.task_ref_bonus  || 0.0005),
+        task_project_fee: parseFloat(s.task_project_fee|| 0.0005),
+      })
+    }).catch(() => {})
+
     getTasks()
       .then(r => setTasks(r.data || []))
       .catch(() => setTasks([]))
       .finally(() => setLoading(false))
     getMyTasks().then(r => setMyTasks(r.data || [])).catch(() => {})
+    // Загружаем цены из настроек стейкинга (публичный эндпоинт)
+    api.get('/api/staking/info').then(r => {
+      if (r.data?.prices) setPrices(r.data.prices)
+    }).catch(() => {})
   }, [])
 
   const handleClaim = async (task) => {
@@ -86,7 +102,7 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
     if (balance < totalCost) { showToast('НЕДОСТАТОЧНО СРЕДСТВ', true); return }
     setCreating(true)
     try {
-      await createTask({ type: form.type, title: form.title, link: form.link, channel_title: form.channel_title, channel_photo: form.channel_photo, max_executions: form.count })
+      await createTask({ type: form.type, title: form.title, link: form.link, channel_title: form.channel_title, channel_photo: form.channel_photo, max_executions: form.count, price_per_exec: pricePerExec })
       updateBalance(-totalCost)
       showToast('ЗАДАНИЕ СОЗДАНО!')
       setForm({ type:'subscribe', link:'', title:'', channel_title:'', channel_photo:'', count:100 })
@@ -199,7 +215,7 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
 
           <div className="price-card">
             <div className="price-row"><span>Выполнений</span><span>{form.count}</span></div>
-            <div className="price-row"><span>Цена за выполнение</span><span>{PRICE_PER} TON</span></div>
+            <div className="price-row"><span>Цена за выполнение</span><span>{pricePerExec.toFixed(4)} TON</span></div>
             <div className="price-divider"/>
             <div className="price-row total">
               <span>ИТОГО</span>
@@ -210,9 +226,10 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
 
           <div className="dist-card">
             <div className="dist-title">РАСПРЕДЕЛЕНИЕ ЗА 1 ВЫПОЛНЕНИЕ</div>
-            <div className="dist-row"><span>👤 Исполнитель</span><span>0.001 TON</span></div>
-            <div className="dist-row"><span>👥 Реферал</span><span>0.0005 TON</span></div>
-            <div className="dist-row"><span>🏦 Комиссия</span><span>0.0005 TON</span></div>
+            <div className="dist-row"><span>💰 Цена заказчика</span><span>{pricePerExec.toFixed(4)} TON</span></div>
+            <div className="dist-row"><span>👤 Исполнитель</span><span>{parseFloat(pricing.task_reward).toFixed(4)} TON</span></div>
+            <div className="dist-row"><span>👥 Реферал</span><span>{parseFloat(pricing.task_ref_bonus).toFixed(4)} TON</span></div>
+            <div className="dist-row"><span>🏦 Комиссия</span><span>{parseFloat(pricing.task_project_fee).toFixed(4)} TON</span></div>
           </div>
 
           <button className="create-btn" onClick={handleCreate} disabled={creating || balance < totalCost || !form.link || !form.title}>
