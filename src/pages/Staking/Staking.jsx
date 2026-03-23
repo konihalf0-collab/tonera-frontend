@@ -45,29 +45,11 @@ export default function Staking({ user }) {
     }).catch(() => {})
   }, [])
 
-  // Когда user обновился (после клейма бонуса) — обновляем wal и bonusDep
+  // Когда user обновился — обновляем wal и bonusDep
   useEffect(() => {
     setWal(parseFloat(user?.balance_ton ?? 0))
-    const bonus = parseFloat(user?.bonus_balance ?? 0)
-    setBonusDep(bonus)
-    // Если есть бонус и нет активного стейка — автоматически стейкаем бонус
-    if (bonus > 0 && dep === 0 && !stakeId) {
-      handleAutoStakeBonus(bonus)
-    }
+    setBonusDep(parseFloat(user?.bonus_balance ?? 0))
   }, [user])
-
-  const handleAutoStakeBonus = async (bonusAmount) => {
-    try {
-      const res = await createStake({ amount: bonusAmount, is_bonus: true })
-      if (res.data?.stake) {
-        setDep(bonusAmount)
-        setStakeId(res.data.stake.id)
-        setAcc(0)
-        setT0(Date.now())
-        setBonusDep(0)
-      }
-    } catch {}
-  }
 
   // Live ticker
   useEffect(() => {
