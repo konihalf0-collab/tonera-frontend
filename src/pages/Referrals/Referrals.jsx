@@ -17,10 +17,14 @@ export default function Referrals({ user }) {
   useEffect(() => {
     getReferrals().then(r => setRefs(r.data)).catch(() => {})
 
-    // Получаем реальный заработок от рефералов из транзакций
+    // Получаем заработок только от рефералов
     api.get('/api/wallet/transactions').then(r => {
       const refEarned = (r.data || [])
-        .filter(t => t.type === 'reward' || t.type === 'ref_task' || t.type === 'ref_deposit')
+        .filter(t =>
+          t.type === 'ref_task' ||
+          t.type === 'ref_deposit' ||
+          (t.type === 'reward' && t.label && t.label.includes('Реф.'))
+        )
         .reduce((sum, t) => sum + parseFloat(t.amount), 0)
       setEarned(refEarned)
     }).catch(() => {})
