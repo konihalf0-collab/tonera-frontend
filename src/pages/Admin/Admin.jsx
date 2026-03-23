@@ -44,6 +44,7 @@ export default function Admin() {
   const [toastErr, setToastErr] = useState(false)
   const [saving, setSaving] = useState(null)
   const [loadingChannel, setLoadingChannel] = useState(false)
+  const [botCheck, setBotCheck] = useState(null) // null | {ok, status}
   const [form, setForm] = useState({ title:'', link:'', type:'subscribe', icon:'✈️', channel_title:'', channel_photo:'' })
   const [confirmDelete, setConfirmDelete] = useState(null)
   const linkTimer = useRef(null)
@@ -85,9 +86,14 @@ export default function Admin() {
     if (!link.includes('t.me/')) return
     linkTimer.current = setTimeout(async () => {
       setLoadingChannel(true)
+      setBotCheck(null)
       try {
-        const r = await api.get(`/api/channels/info?link=${encodeURIComponent(link)}`)
-        setForm(p => ({ ...p, title: r.data.title || p.title, channel_title: r.data.title || '', channel_photo: r.data.photo || '', icon: p.type === 'bot' ? '🤖' : '✈️' }))
+        const [info, check] = await Promise.all([
+          api.get(`/api/channels/info?link=${encodeURIComponent(link)}`),
+          api.get(`/api/channels/check?link=${encodeURIComponent(link)}`),
+        ])
+        setForm(p => ({ ...p, title: info.data.title || p.title, channel_title: info.data.title || '', channel_photo: info.data.photo || '', icon: p.type === 'bot' ? '🤖' : '✈️' }))
+        setBotCheck(check.data)
       } catch {}
       setLoadingChannel(false)
     }, 800)
@@ -99,6 +105,7 @@ export default function Admin() {
       await api.post('/api/admin/tasks', form)
       showToast('ЗАДАНИЕ ДОБАВЛЕНО ✓')
       setForm({ title:'', link:'', type:'subscribe', icon:'✈️', channel_title:'', channel_photo:'' })
+      setBotCheck(null)
       const r = await api.get('/api/admin/tasks')
       setTasks(r.data)
     } catch { showToast('ОШИБКА', true) }
@@ -245,6 +252,23 @@ export default function Admin() {
               <div className="channel-preview">
                 <img src={form.channel_photo} className="ch-photo" onError={e=>e.target.style.display='none'}/>
                 <div className="ch-info"><div className="ch-title">{form.channel_title}</div><div className="ch-link">{form.link}</div></div>
+              </div>
+            )}
+            {botCheck !== null && (
+              <div className={`bot-check ${botCheck.ok ? 'ok' : 'fail'}`}>
+                {botCheck.ok ? (
+                  <span>✅ Бот является администратором канала</span>
+                ) : (
+                  <div>
+                    <div>❌ Бот не является администратором</div>
+                    <div className="bot-check-hint">
+                      Добавь @tonera_bot в канал как администратора:<br/>
+                      1. Открой настройки канала<br/>
+                      2. Администраторы → Добавить администратора<br/>
+                      3. Найди @tonera_bot и добавь
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             <div className="atf-row">
