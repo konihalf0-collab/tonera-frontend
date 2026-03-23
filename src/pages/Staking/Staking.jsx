@@ -8,6 +8,7 @@ const RATE_MS = 0.01 / (24 * 60 * 60 * 1000)
 export default function Staking({ user }) {
   const { updateBalance } = useUserStore()
   const [dep, setDep] = useState(0)
+  const [bonusDep, setBonusDep] = useState(parseFloat(user?.bonus_balance ?? 0))
   const [wal, setWal] = useState(parseFloat(user?.balance_ton ?? 0))
   const [acc, setAcc] = useState(0)
   const [t0, setT0] = useState(Date.now())
@@ -33,6 +34,8 @@ export default function Staking({ user }) {
         setT0(new Date(s.started_at).getTime())
       }
     }).catch(() => {})
+    // Load bonus balance
+    setBonusDep(parseFloat(user?.bonus_balance ?? 0))
   }, [])
 
   useEffect(() => {

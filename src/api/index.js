@@ -24,3 +24,6 @@ export default api
 
 export const createTask    = (data) => api.post('/api/tasks/create', data)
 export const getMyTasks    = () => api.get('/api/tasks/my')
+
+export const getBonusStatus = () => api.get('/api/bonus/status')
+export const claimBonus     = () => api.post('/api/bonus/claim')

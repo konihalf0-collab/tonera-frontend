@@ -9,6 +9,7 @@ import Referrals from './pages/Referrals/Referrals'
 import Wallet from './pages/Wallet/Wallet'
 import Admin from './pages/Admin/Admin'
 import Customer from './pages/Customer/Customer'
+import WelcomeBonus from './components/WelcomeBonus'
 import './App.css'
 
 const ADMIN_ID = 5651190404
@@ -82,6 +83,7 @@ export default function App() {
         {tab === 'admin'     && <Admin     />}
       </div>
 
+      <WelcomeBonus onClaim={() => setTab('staking')} />
       <nav className="bottom-nav">
         {visibleTabs.map(t => (
           <button key={t.id} className={`nav-item ${tab === t.id ? 'active' : ''}`} onClick={() => setTab(t.id)}>
