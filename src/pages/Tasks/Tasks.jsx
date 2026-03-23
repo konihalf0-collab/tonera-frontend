@@ -185,8 +185,8 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
           <div className="cf-row">
             <div className="cf-label">ТИП ЗАДАНИЯ</div>
             <div className="type-btns">
-              <button className={`type-btn ${form.type==='subscribe'?'on':''}`} onClick={() => setForm(p=>({...p,type:'subscribe'}))}>✈️ Подписка</button>
-              <button className={`type-btn ${form.type==='bot'?'on':''}`} onClick={() => setForm(p=>({...p,type:'bot'}))}>🤖 Бот</button>
+              <button className={`type-btn ${form.type==='subscribe'?'on':''}`} onClick={() => { setForm({ type:'subscribe', link:'', title:'', channel_title:'', channel_photo:'', count:form.count }); setBotCheck(null) }}>✈️ Подписка</button>
+              <button className={`type-btn ${form.type==='bot'?'on':''}`} onClick={() => { setForm({ type:'bot', link:'', title:'', channel_title:'', channel_photo:'', count:form.count }); setBotCheck(null) }}>🤖 Бот</button>
             </div>
           </div>
 
