@@ -46,7 +46,7 @@ export default function Wallet({ user }) {
               <div className="tx-date">{new Date(tx.date).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
             </div>
             <div className={`tx-amt ${tx.amount > 0 ? 'pos' : 'neg'}`}>
-              {tx.amount > 0 ? '+' : ''}{tx.amount} TON
+              {tx.amount > 0 ? '+' : ''}{parseFloat(tx.amount).toFixed(4)} TON
             </div>
           </div>
         ))}
