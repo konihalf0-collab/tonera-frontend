@@ -2,14 +2,8 @@ import { useState, useEffect } from 'react'
 import { getTransactions } from '../../api/index'
 import './Wallet.css'
 
-const MOCK = [
-  { id:1, type:'stake',   amount:-10,  label:'Стейкинг',          date:'2024-03-20T10:00:00Z' },
-  { id:2, type:'reward',  amount:+0.5, label:'Реферальный бонус', date:'2024-03-19T14:22:00Z' },
-  { id:3, type:'deposit', amount:+50,  label:'Пополнение',        date:'2024-03-18T18:05:00Z' },
-]
-
 export default function Wallet({ user }) {
-  const [txs, setTxs] = useState(MOCK)
+  const [txs, setTxs] = useState([])
   const balance = parseFloat(user?.balance_ton ?? 0)
 
   useEffect(() => {
