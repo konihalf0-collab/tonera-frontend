@@ -17,6 +17,7 @@ export default function Staking({ user }) {
   const [amount, setAmount] = useState('')
   const [stakeId, setStakeId] = useState(null)
   const [toast, setToast] = useState('')
+  const [mins, setMins] = useState({ deposit: 0.01, withdraw: 0.01, reinvest: 0.001 })
   const timerRef = useRef(null)
   const depRef = useRef(dep)
 
@@ -25,6 +26,13 @@ export default function Staking({ user }) {
   const getIncome = (a, t) => a + depRef.current * RATE_MS * (Date.now() - t)
 
   useEffect(() => {
+    // Загружаем минимумы из настроек
+    import('../../api/index').then(({ default: api }) => {
+      api.get('/api/staking/info').then(r => {
+        if (r.data?.mins) setMins(r.data.mins)
+      }).catch(() => {})
+    })
+
     // Загружаем активный стейк
     getUserStakes().then(r => {
       if (r.data?.length > 0) {
@@ -97,6 +105,7 @@ export default function Staking({ user }) {
 
   const handleReinvest = async () => {
     if (income < 1e-9) return
+    if (income < mins.reinvest) { showToast(`МИН. РЕИНВЕСТ: ${mins.reinvest} TON`); return }
     const v = snap()
     const newDep = dep + v
     setAcc(0); setT0(Date.now())
@@ -113,6 +122,7 @@ export default function Staking({ user }) {
     const val = parseFloat(amount)
     if (!val || val <= 0) { showToast('ВВЕДИ СУММУ'); return }
     if (modal === 'plus') {
+      if (val < mins.deposit) { showToast(`МИН. ДЕПОЗИТ: ${mins.deposit} TON`); return }
       if (val > wal) { showToast('НЕДОСТАТОЧНО СРЕДСТВ'); return }
       snap(); setAcc(0); setT0(Date.now())
       setWal(w => w - val)
@@ -127,6 +137,7 @@ export default function Staking({ user }) {
     } else {
       // Нельзя вывести бонусную часть
       const withdrawable = dep - bonusDep
+      if (val < mins.withdraw) { showToast(`МИН. ВЫВОД: ${mins.withdraw} TON`); return }
       if (val > withdrawable) {
         showToast(`МАКС. ВЫВОД: ${withdrawable.toFixed(4)} TON`)
         return

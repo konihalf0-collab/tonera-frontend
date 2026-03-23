@@ -125,7 +125,8 @@ export default function Admin() {
       )}
 
       <div className="admin-header">
-        <div class="admin-title">⚙️ Админ панель</div>
+        <div className="admin-title">⚙️ Админ панель</div>
+        <div className="admin-only-note">🔒 Видно только администратору</div>
       </div>
 
       <div className="admin-tabs">
@@ -159,6 +160,9 @@ export default function Admin() {
             { key:'task_project_fee',    label:'Комиссия проекта (TON)' },
             { key:'ref_register_bonus',  label:'Бонус за регистрацию (TON)' },
             { key:'ref_deposit_percent', label:'% от депозита реферала' },
+            { key:'min_deposit',          label:'Минимальный депозит (TON)' },
+            { key:'min_withdraw',         label:'Минимальный вывод (TON)' },
+            { key:'min_reinvest',         label:'Минимальный реинвест (TON)' },
           ].map(s => (
             <div key={s.key} className="setting-group">
               <div className="setting-label">{s.label}</div>

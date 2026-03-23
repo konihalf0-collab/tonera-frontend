@@ -87,3 +87,4 @@
 .aui-btn.unblock{background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);}
 .aui-btn.del{background:rgba(255,77,106,0.12);border:1px solid rgba(255,77,106,0.3);}
 .aui-balance{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:#00d4ff;flex-shrink:0;}
+.admin-only-note{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(0,212,255,0.5);margin-top:4px;display:flex;align-items:center;gap:4px;}
