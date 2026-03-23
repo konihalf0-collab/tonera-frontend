@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { getReferrals } from '../../api/index'
+import api from '../../api/index'
 import './Referrals.css'
 
 const BOT_USERNAME = import.meta.env.VITE_BOT_USERNAME || 'tonera_bot'
 
 export default function Referrals({ user }) {
   const [refs, setRefs] = useState([])
+  const [earned, setEarned] = useState(0)
   const [copied, setCopied] = useState(false)
 
   const refLink = user?.ref_code
@@ -14,6 +16,14 @@ export default function Referrals({ user }) {
 
   useEffect(() => {
     getReferrals().then(r => setRefs(r.data)).catch(() => {})
+
+    // Получаем реальный заработок от рефералов из транзакций
+    api.get('/api/wallet/transactions').then(r => {
+      const refEarned = (r.data || [])
+        .filter(t => t.type === 'reward' || t.type === 'ref_task' || t.type === 'ref_deposit')
+        .reduce((sum, t) => sum + parseFloat(t.amount), 0)
+      setEarned(refEarned)
+    }).catch(() => {})
   }, [])
 
   const handleCopy = () => {
@@ -33,7 +43,7 @@ export default function Referrals({ user }) {
 
       <div className="refs-stats">
         <div className="ref-stat"><div className="rsv">{refs.length}</div><div className="rsl">Приглашено</div></div>
-        <div className="ref-stat"><div className="rsv">{(refs.length * 0.5).toFixed(1)}</div><div className="rsl">TON заработано</div></div>
+        <div className="ref-stat"><div className="rsv">{earned.toFixed(4)}</div><div className="rsl">TON заработано</div></div>
       </div>
 
       <div className="invite-card">
@@ -65,7 +75,7 @@ export default function Referrals({ user }) {
                 <div className="ref-name">{r.username || r.first_name || 'Пользователь'}</div>
                 <div className="ref-date">{new Date(r.created_at).toLocaleDateString('ru')}</div>
               </div>
-              <div className="ref-bonus">+0.5 TON</div>
+              <div className="ref-bonus">+{parseFloat(user?.ref_register_bonus || 0).toFixed(4)} TON</div>
             </div>
           ))}
         </div>
