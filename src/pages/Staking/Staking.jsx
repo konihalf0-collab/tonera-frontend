@@ -79,7 +79,7 @@ export default function Staking({ user }) {
     updateBalance(v)
     showToast(`СОБРАНО +${v.toFixed(6)} TON`)
     try {
-      if (stakeId) await unstake(stakeId)
+      if (stakeId) await unstake(stakeId, 'Сбор дохода', true)
       const res = await createStake({ amount: dep })
       if (res.data?.stake?.id) setStakeId(res.data.stake.id)
     } catch {}
@@ -114,7 +114,7 @@ export default function Staking({ user }) {
       setDep(d => d + val)
       updateBalance(-val)
       try {
-        if (stakeId) await unstake(stakeId)
+        if (stakeId) await unstake(stakeId, 'Пересоздание стейка', true)
         const res = await createStake({ amount: dep + val })
         if (res.data?.stake?.id) setStakeId(res.data.stake.id)
       } catch {}
@@ -132,7 +132,7 @@ export default function Staking({ user }) {
       setWal(w => w + val)
       updateBalance(val)
       try {
-        if (stakeId) await unstake(stakeId)
+        if (stakeId) await unstake(stakeId, 'Вывод депозита', false)
         if (dep - val > 0) {
           const res = await createStake({ amount: dep - val })
           if (res.data?.stake?.id) setStakeId(res.data.stake.id)

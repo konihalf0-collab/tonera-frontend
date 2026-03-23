@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
 export const authLogin       = () => api.post('/api/auth/login')
 export const getUserStakes   = () => api.get('/api/staking/my')
 export const createStake     = (data) => api.post('/api/staking/stake', data)
-export const unstake         = (stakeId, label) => api.post(`/api/staking/unstake/${stakeId}`, { label })
+export const unstake         = (stakeId, label, internal=false) => api.post(`/api/staking/unstake/${stakeId}`, { label, internal })
 export const reinvestStake   = (stakeId, earned, newAmount) => api.post(`/api/staking/reinvest/${stakeId}`, { earned, newAmount })
 export const getTasks        = () => api.get('/api/tasks')
 export const completeTask    = (id) => api.post(`/api/tasks/${id}/complete`)
