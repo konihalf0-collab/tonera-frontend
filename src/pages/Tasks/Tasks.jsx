@@ -29,6 +29,7 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
   const [form, setForm] = useState({ type:'subscribe', link:'', title:'', channel_title:'', channel_photo:'', count:100 })
   const [loadingCh, setLoadingCh] = useState(false)
   const [creating, setCreating] = useState(false)
+  const [botCheck, setBotCheck] = useState(null)
   const linkTimer = useRef(null)
 
   const [pricing, setPricing] = useState({ task_price: 0.002, task_reward: 0.001, task_ref_bonus: 0.0005, task_project_fee: 0.0005 })
@@ -88,9 +89,14 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
     if (!link.includes('t.me/')) return
     linkTimer.current = setTimeout(async () => {
       setLoadingCh(true)
+      setBotCheck(null)
       try {
-        const r = await api.get(`/api/channels/info?link=${encodeURIComponent(link)}`)
-        setForm(p => ({ ...p, title: r.data.title || p.title, channel_title: r.data.title || '', channel_photo: r.data.photo || '' }))
+        const [info, check] = await Promise.all([
+          api.get(`/api/channels/info?link=${encodeURIComponent(link)}`),
+          api.get(`/api/channels/check?link=${encodeURIComponent(link)}`),
+        ])
+        setForm(p => ({ ...p, title: info.data.title || p.title, channel_title: info.data.title || '', channel_photo: info.data.photo || '' }))
+        setBotCheck(check.data)
       } catch {}
       setLoadingCh(false)
     }, 800)
@@ -199,6 +205,21 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
             </div>
           )}
 
+          {botCheck !== null && (
+            <div className={`task-bot-check ${botCheck.ok ? 'ok' : 'fail'}`}>
+              {botCheck.ok ? (
+                <span>✅ Бот добавлен в канал — проверка подписки работает</span>
+              ) : (
+                <div>
+                  <div>⚠️ Бот не является администратором канала</div>
+                  <div className="task-bot-hint">
+                    Без этого проверка подписки не будет работать.<br/>
+                    Добавь @tonera_bot в канал как администратора.
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           <div className="cf-row">
             <div className="cf-label">НАЗВАНИЕ</div>
             <input className="cf-input" placeholder="Название задания" value={form.title} onChange={e => setForm(p=>({...p,title:e.target.value}))}/>
@@ -232,7 +253,7 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
             <div className="dist-row"><span>🏦 Комиссия</span><span>{parseFloat(pricing.task_project_fee).toFixed(4)} TON</span></div>
           </div>
 
-          <button className="create-btn" onClick={handleCreate} disabled={creating || balance < totalCost || !form.link || !form.title}>
+          <button className="create-btn" onClick={handleCreate} disabled={creating || balance < totalCost || !form.link || !form.title || (botCheck !== null && !botCheck.ok)}>
             {creating ? 'СОЗДАНИЕ...' : `СОЗДАТЬ ЗА ${totalCost.toFixed(4)} TON`}
           </button>
         </div>

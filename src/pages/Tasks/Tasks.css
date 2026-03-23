@@ -111,3 +111,8 @@
 .mt-stat span:last-child{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:#00d4ff;}
 .dist-divider{height:1px;background:rgba(26,95,255,0.15);margin:6px 0;}
 .dist-total{font-family:'Orbitron',sans-serif;font-weight:700;color:#00d4ff;}
+
+.task-bot-check{border-radius:10px;padding:10px 12px;margin-bottom:12px;font-family:'DM Sans',sans-serif;font-size:12px;line-height:1.6;}
+.task-bot-check.ok{background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.25);color:#00e676;}
+.task-bot-check.fail{background:rgba(255,179,0,0.08);border:1px solid rgba(255,179,0,0.25);color:#ffb300;}
+.task-bot-hint{margin-top:6px;color:rgba(232,242,255,0.5);font-size:11px;line-height:1.7;}
