@@ -24,6 +24,7 @@ const TABS = [
 
 export default function App() {
   const [tab, setTab] = useState('home')
+  const [tasksView, setTasksView] = useState('list')
   const { user, setUser } = useUserStore()
 
   useEffect(() => {
@@ -34,6 +35,8 @@ export default function App() {
     }).catch(() => setUser({ balance_ton: 0, username: 'Пользователь' }))
   }, [])
 
+  const goCreate = () => { setTasksView('create'); setTab('tasks') }
+  const goMyTasks = () => { setTasksView('my'); setTab('tasks') }
   const isAdmin = Number(user?.telegram_id) === ADMIN_ID
   const visibleTabs = TABS.filter(t => (t.id !== 'admin' || isAdmin) && t.id !== 'customer')
   const balance = parseFloat(user?.balance_ton ?? 0)
@@ -72,9 +75,9 @@ export default function App() {
       </div>
 
       <div className="app-content">
-        {tab === 'home'      && <Home      user={user} onTab={setTab} />}
+        {tab === 'home'      && <Home      user={user} onTab={setTab} onCreate={goCreate} onMyTasks={goMyTasks} />}
         {tab === 'staking'   && <Staking   user={user} />}
-        {tab === 'tasks'     && <Tasks     />}
+        {tab === 'tasks'     && <Tasks initialView={tasksView} onViewChange={setTasksView} />}
         {tab === 'referrals' && <Referrals user={user} />}
         {tab === 'wallet'    && <Wallet    user={user} />}
         {tab === 'admin'     && <Admin     />}

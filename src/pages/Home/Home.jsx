@@ -1,6 +1,6 @@
 import './Home.css'
 
-export default function Home({ user, onTab }) {
+export default function Home({ user, onTab, onCreate, onMyTasks }) {
   const balance = parseFloat(user?.balance_ton ?? 0)
   const username = user?.username || user?.first_name || 'Пользователь'
 

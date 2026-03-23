@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { getTasks, completeTask, createTask } from '../../api/index'
+import { getTasks, completeTask, createTask, getMyTasks } from '../../api/index'
 import { useUserStore } from '../../store/userStore'
 import api from '../../api/index'
 import './Tasks.css'
@@ -11,9 +11,14 @@ const TYPE_LABEL = { subscribe:'ПОДПИСКА', bot:'БОТ' }
 const TYPE_CLS   = { subscribe:'t-sub', bot:'t-bot' }
 const TYPE_BADGE = { subscribe:'b-sub', bot:'b-bot' }
 
-export default function Tasks() {
+export default function Tasks({ initialView = 'list', onViewChange }) {
   const { user, updateBalance } = useUserStore()
-  const [view, setView] = useState('list') // list | create
+  const [view, setView] = useState(initialView)
+  const [myTasks, setMyTasks] = useState([])
+
+  const changeView = (v) => { setView(v); onViewChange?.(v) }
+
+  useEffect(() => { setView(initialView) }, [initialView])
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [completing, setCompleting] = useState(null)
@@ -39,6 +44,7 @@ export default function Tasks() {
       .then(r => setTasks(r.data || []))
       .catch(() => setTasks([]))
       .finally(() => setLoading(false))
+    getMyTasks().then(r => setMyTasks(r.data || [])).catch(() => {})
   }, [])
 
   const handleClaim = async (task) => {
@@ -84,7 +90,7 @@ export default function Tasks() {
       updateBalance(-totalCost)
       showToast('ЗАДАНИЕ СОЗДАНО!')
       setForm({ type:'subscribe', link:'', title:'', channel_title:'', channel_photo:'', count:100 })
-      setView('list')
+      changeView('list')
       const r = await getTasks()
       setTasks(r.data || [])
     } catch (e) {
@@ -97,11 +103,10 @@ export default function Tasks() {
     <div className="tasks-wrap">
       {toast && <div className={`tasks-toast ${toastErr ? 'err' : ''}`}>{toast}</div>}
 
-      <div className="tasks-hdr">
-        <div className="tasks-title">{view === 'list' ? 'Задания' : 'Создать задание'}</div>
-        <button className="toggle-view-btn" onClick={() => setView(v => v === 'list' ? 'create' : 'list')}>
-          {view === 'list' ? '+ Создать' : '← Назад'}
-        </button>
+      <div className="tasks-tabs">
+        <button className={`ttab ${view==='list'?'on':''}`} onClick={() => changeView('list')}>ЗАДАНИЯ</button>
+        <button className={`ttab ${view==='create'?'on':''}`} onClick={() => changeView('create')}>ЗАКАЗАТЬ</button>
+        <button className={`ttab ${view==='my'?'on':''}`} onClick={() => changeView('my')}>МОИ</button>
       </div>
 
       {/* LIST VIEW */}
@@ -213,6 +218,45 @@ export default function Tasks() {
           <button className="create-btn" onClick={handleCreate} disabled={creating || balance < totalCost || !form.link || !form.title}>
             {creating ? 'СОЗДАНИЕ...' : `СОЗДАТЬ ЗА ${totalCost.toFixed(4)} TON`}
           </button>
+        </div>
+      )}
+      {/* MY TASKS VIEW */}
+      {view === 'my' && (
+        <div className="my-tasks">
+          {myTasks.length === 0 ? (
+            <div className="tasks-empty">
+              <div className="empty-icon">📋</div>
+              <div className="empty-text">Нет созданных заданий</div>
+            </div>
+          ) : (
+            myTasks.map(task => (
+              <div key={task.id} className="my-task-card">
+                <div className="mt-header">
+                  {task.channel_photo
+                    ? <img src={task.channel_photo} className="mt-photo" onError={e => e.target.style.display='none'}/>
+                    : <div className="mt-icon">{task.icon}</div>
+                  }
+                  <div className="mt-info">
+                    <div className="mt-title">{task.channel_title || task.title}</div>
+                    <div className="mt-link">{task.link}</div>
+                  </div>
+                  <div className={`mt-status ${task.active ? 'active' : 'done'}`}>
+                    {task.active ? 'АКТИВНО' : 'ЗАВЕРШЕНО'}
+                  </div>
+                </div>
+                <div className="mt-progress">
+                  <div className="mt-prog-bar">
+                    <div className="mt-prog-fill" style={{width:`${Math.min((task.executions/task.max_executions)*100,100)}%`}}/>
+                  </div>
+                  <div className="mt-prog-text">{task.executions} / {task.max_executions} выполнений</div>
+                </div>
+                <div className="mt-stats">
+                  <div className="mt-stat"><span>Бюджет</span><span>{parseFloat(task.budget).toFixed(4)} TON</span></div>
+                  <div className="mt-stat"><span>Потрачено</span><span>{(task.executions * 0.002).toFixed(4)} TON</span></div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       )}
     </div>
