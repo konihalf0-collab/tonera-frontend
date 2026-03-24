@@ -18,7 +18,7 @@ export default function Staking({ user }) {
   const [amount, setAmount] = useState('')
   const [stakeId, setStakeId] = useState(null)
   const [toast, setToast] = useState('')
-  const [mins, setMins] = useState({ deposit: 0.01, withdraw: 0.01, reinvest: 0.001 })
+  const [mins, setMins] = useState({ deposit: 0.01, withdraw: 0.01, reinvest: 0.001, collect: 0.001 })
   const timerRef = useRef(null)
   const depRef = useRef(dep)
 
@@ -85,6 +85,8 @@ export default function Staking({ user }) {
 
   const handleCollect = async () => {
     if (income < 1e-9) return
+    if (income < mins.collect) { showToast(`МИН. СБОР: ${mins.collect} TON`); return }
+    if (income < mins.collect) { showToast(`МИН. СБОР: ${mins.collect} TON`); return }
     const v = snap()
     setAcc(0); setT0(Date.now())
     setWal(w => w + v)
