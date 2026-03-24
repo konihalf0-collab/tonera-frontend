@@ -14,6 +14,7 @@
     "axios": "^1.6.7",
     "zustand": "^4.5.0",
     "@ton/core": "^0.59.0",
+    "buffer": "^6.0.3",
     "@tonconnect/ui-react": "^2.0.0"
   },
   "devDependencies": {
