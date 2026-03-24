@@ -10,6 +10,7 @@ const SETTING_GROUPS = [
       { key: 'min_deposit',  label: 'Минимальный депозит (TON)' },
       { key: 'min_withdraw', label: 'Минимальный вывод (TON)' },
       { key: 'min_reinvest', label: 'Минимальный реинвест (TON)' },
+      { key: 'min_collect',  label: 'Минимальный сбор (TON)' },
     ]
   },
   {
