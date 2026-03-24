@@ -23,6 +23,14 @@ const SETTING_GROUPS = [
     ]
   },
   {
+    id: 'wallet',
+    title: '💎 Кошелёк проекта',
+    settings: [
+      { key: 'project_wallet',  label: 'Адрес кошелька (TON)' },
+      { key: 'min_deposit_ton', label: 'Мин. сумма депозита (TON)' },
+    ]
+  },
+  {
     id: 'referrals',
     title: '👥 Рефералы',
     settings: [
