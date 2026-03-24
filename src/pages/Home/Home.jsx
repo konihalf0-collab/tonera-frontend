@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getUserStakes } from '../../api/index'
+import { getUserStakes, getTasks } from '../../api/index'
 import './Home.css'
 
 export default function Home({ user, onTab, onCreate, onMyTasks }) {
@@ -9,12 +9,10 @@ export default function Home({ user, onTab, onCreate, onMyTasks }) {
   const [tasksDone, setTasksDone] = useState(null)
 
   useEffect(() => {
-    import('../../api/index').then(({ getTasks }) => {
-      getTasks().then(r => {
-        const done = (r.data || []).filter(t => t.completed).length
-        setTasksDone(done)
-      }).catch(() => setTasksDone(0))
-    })
+    getTasks().then(r => {
+      const done = (r.data || []).filter(t => t.completed).length
+      setTasksDone(done)
+    }).catch(() => setTasksDone(0))
 
     getUserStakes().then(r => {
       const total = (r.data || []).reduce((s, st) => s + parseFloat(st.amount), 0)

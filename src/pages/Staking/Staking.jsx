@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { getUserStakes, createStake, unstake, reinvestStake, addToStake, collectStake, withdrawStake } from '../../api/index'
+import api from '../../api/index'
 import { useUserStore } from '../../store/userStore'
 import './Staking.css'
 
@@ -27,11 +28,9 @@ export default function Staking({ user }) {
 
   useEffect(() => {
     // Загружаем минимумы из настроек
-    import('../../api/index').then(({ default: api }) => {
-      api.get('/api/staking/info').then(r => {
-        if (r.data?.mins) setMins(r.data.mins)
-      }).catch(() => {})
-    })
+    api.get('/api/staking/info').then(r => {
+      if (r.data?.mins) setMins(r.data.mins)
+    }).catch(() => {})
 
     // Загружаем активный стейк
     getUserStakes().then(r => {
