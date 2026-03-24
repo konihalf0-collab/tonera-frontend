@@ -57,6 +57,12 @@ export default function Admin() {
   const [botCheck, setBotCheck] = useState(null) // null | {ok, status}
   const [form, setForm] = useState({ title:'', link:'', type:'subscribe', icon:'✈️', channel_title:'', channel_photo:'' })
   const [confirmDelete, setConfirmDelete] = useState(null)
+  const [search, setSearch] = useState('')
+  const [sortBy, setSortBy] = useState('created_at') // created_at | balance_ton | referral_count
+  const [sortDir, setSortDir] = useState('desc')
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [userStats, setUserStats] = useState(null)
+  const [usersTab, setUsersTab] = useState('all') // all | donors
   const [withdrawals, setWithdrawals] = useState([])
   const linkTimer = useRef(null)
 
@@ -152,6 +158,14 @@ export default function Admin() {
       setUsers(prev => prev.map(u => u.id === user.id ? {...u, is_blocked: false} : u))
       showToast('РАЗБЛОКИРОВАН')
     } catch { showToast('ОШИБКА', true) }
+  }
+
+  const openUserStats = async (user) => {
+    setSelectedUser(user)
+    try {
+      const r = await api.get(`/api/admin/users/${user.id}/stats`)
+      setUserStats(r.data)
+    } catch {}
   }
 
   const markWithdrawalDone = async (id) => {
@@ -378,11 +392,38 @@ export default function Admin() {
       )}
 
       {/* USERS */}
-      {tab === 'users' && (
+      {tab === 'users' && !selectedUser && (
         <div className="admin-section">
+          <div className="users-search-row">
+            <input className="users-search" placeholder="🔍 Поиск по имени или ID..." value={search} onChange={e => setSearch(e.target.value)}/>
+          </div>
+          <div className="users-sort-row">
+            <div className="users-tabs">
+              <button className={`utab ${usersTab==='all'?'on':''}`} onClick={() => setUsersTab('all')}>ВСЕ</button>
+              <button className={`utab ${usersTab==='donors'?'on':''}`} onClick={() => setUsersTab('donors')}>💎 ДОНАТОРЫ</button>
+            </div>
+            <div className="sort-btns">
+              {[{k:'created_at',l:'ДАТА'},{k:'balance_ton',l:'БАЛАНС'},{k:'referral_count',l:'РЕФЫ'}].map(s => (
+                <button key={s.k} className={`sort-btn ${sortBy===s.k?'on':''}`} onClick={() => { if(sortBy===s.k) setSortDir(d=>d==='desc'?'asc':'desc'); else { setSortBy(s.k); setSortDir('desc') } }}>
+                  {s.l}{sortBy===s.k ? (sortDir==='desc'?' ↓':' ↑') : ''}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="users-count">{users.length} пользователей</div>
-          {users.map(u => (
-            <div key={u.id} className={`admin-user-item ${u.is_blocked ? 'blocked' : ''}`}>
+          {users
+            .filter(u => {
+              if (usersTab === 'donors') return parseFloat(u.balance_ton) > 0
+              const q = search.toLowerCase()
+              return !q || (u.username||'').toLowerCase().includes(q) || (u.first_name||'').toLowerCase().includes(q) || String(u.telegram_id).includes(q)
+            })
+            .sort((a, b) => {
+              const va = parseFloat(a[sortBy]) || new Date(a[sortBy]).getTime() || 0
+              const vb = parseFloat(b[sortBy]) || new Date(b[sortBy]).getTime() || 0
+              return sortDir === 'desc' ? vb - va : va - vb
+            })
+            .map(u => (
+            <div key={u.id} className={`admin-user-item ${u.is_blocked ? 'blocked' : ''}`} onClick={() => openUserStats(u)} style={{cursor:'pointer'}}>
               <div className="aui-avatar">{(u.username||u.first_name||'?')[0].toUpperCase()}</div>
               <div className="aui-info">
                 <div className="aui-name">
@@ -392,7 +433,7 @@ export default function Admin() {
                 <div className="aui-meta">ID: {u.telegram_id} · Рефов: {u.referral_count}</div>
               </div>
               <div className="aui-balance">{parseFloat(u.balance_ton).toFixed(4)}</div>
-              <div className="aui-actions">
+              <div className="aui-actions" onClick={e => e.stopPropagation()}>
                 {u.is_blocked
                   ? <button className="aui-btn unblock" onClick={() => unblockUser(u)}>✓</button>
                   : <button className="aui-btn block" onClick={() => blockUser(u)}>🚫</button>
@@ -401,6 +442,37 @@ export default function Admin() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* USER STATS */}
+      {tab === 'users' && selectedUser && (
+        <div className="admin-section">
+          <button className="back-btn" onClick={() => { setSelectedUser(null); setUserStats(null) }}>← Назад</button>
+          <div className="user-profile">
+            <div className="up-avatar">{(selectedUser.username||selectedUser.first_name||'?')[0].toUpperCase()}</div>
+            <div className="up-name">{selectedUser.username || selectedUser.first_name}</div>
+            <div className="up-id">ID: {selectedUser.telegram_id}</div>
+          </div>
+          {userStats ? (
+            <>
+              <div className="stats-cards">
+                <div className="astat-card"><div className="astat-val">{parseFloat(selectedUser.balance_ton).toFixed(4)}</div><div className="astat-lbl">Баланс TON</div></div>
+                <div className="astat-card"><div className="astat-val">{userStats.stats.totalDeposit.toFixed(4)}</div><div className="astat-lbl">Депозитов</div></div>
+                <div className="astat-card"><div className="astat-val">{userStats.stats.totalWithdraw.toFixed(4)}</div><div className="astat-lbl">Выводов</div></div>
+                <div className="astat-card"><div className="astat-val">{userStats.stats.tasksCount}</div><div className="astat-lbl">Заданий</div></div>
+                <div className="astat-card"><div className="astat-val">{selectedUser.referral_count}</div><div className="astat-lbl">Рефералов</div></div>
+                <div className="astat-card"><div className="astat-val">{userStats.stats.totalStaked.toFixed(4)}</div><div className="astat-lbl">В стейке</div></div>
+              </div>
+              <div className="ut-section-title">ТРАНЗАКЦИИ</div>
+              {userStats.txs.map(tx => (
+                <div key={tx.id} className="ut-tx">
+                  <div className="ut-tx-label">{tx.label?.split('|net:')[0]}</div>
+                  <div className={`ut-tx-amt ${parseFloat(tx.amount)>0?'pos':'neg'}`}>{parseFloat(tx.amount)>0?'+':''}{parseFloat(tx.amount).toFixed(4)}</div>
+                </div>
+              ))}
+            </>
+          ) : <div className="spinner" style={{margin:'20px auto'}}/>}
         </div>
       )}
     </div>
