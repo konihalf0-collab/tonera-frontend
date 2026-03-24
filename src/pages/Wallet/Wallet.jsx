@@ -2,39 +2,9 @@ import { useState, useEffect } from 'react'
 import { getTransactions } from '../../api/index'
 import { useUserStore } from '../../store/userStore'
 import api from '../../api/index'
-import { TonConnectButton, useTonConnectUI, useTonWallet } from '@tonconnect/ui-react'
+import { TonConnectButton, useTonConnectUI, useTonWallet, toUserFriendlyAddress } from '@tonconnect/ui-react'
+import { Address } from '@ton/ton'
 import './Wallet.css'
-
-// Конвертация hex адреса в user-friendly формат
-function toUserFriendlyAddress(address) {
-  try {
-    if (!address) return ''
-    if (address.startsWith('UQ') || address.startsWith('EQ')) return address
-    // Конвертируем raw hex в base64url
-    const parts = address.split(':')
-    if (parts.length !== 2) return address
-    const workchain = parseInt(parts[0])
-    const hexAddr = parts[1]
-    const bytes = new Uint8Array(36)
-    bytes[0] = 0x11 // non-bounceable
-    bytes[1] = workchain === -1 ? 0xff : workchain
-    for (let i = 0; i < 32; i++) {
-      bytes[i + 2] = parseInt(hexAddr.slice(i * 2, i * 2 + 2), 16)
-    }
-    // CRC16
-    let crc = 0
-    for (let i = 0; i < 34; i++) {
-      crc ^= bytes[i] << 8
-      for (let j = 0; j < 8; j++) {
-        if (crc & 0x8000) crc = (crc << 1) ^ 0x1021
-        else crc <<= 1
-      }
-    }
-    bytes[34] = (crc >> 8) & 0xff
-    bytes[35] = crc & 0xff
-    return btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_')
-  } catch { return address }
-}
 
 const TX_ICONS = {
   stake: '📈', reward: '🎁', deposit: '⬇️', withdraw: '⬆️',
@@ -154,7 +124,15 @@ export default function Wallet({ user }) {
 
         <div className="wc-btns">
           <button className="wc-btn wc-in" onClick={() => { setModal('deposit'); setAmount('') }}>⬇ ПОПОЛНИТЬ</button>
-          <button className="wc-btn wc-out" onClick={() => { setModal('withdraw'); setAmount(''); const addr = wallet?.account?.address; setWalletAddr(addr ? toUserFriendlyAddress(addr) : '') }}>⬆ ВЫВЕСТИ</button>
+          <button className="wc-btn wc-out" onClick={() => {
+            setModal('withdraw')
+            setAmount('')
+            try {
+              const raw = wallet?.account?.address
+              const friendly = raw ? toUserFriendlyAddress(raw, wallet.account.chain === '-3') : ''
+              setWalletAddr(friendly)
+            } catch { setWalletAddr('') }
+          }}>⬆ ВЫВЕСТИ</button>
         </div>
       </div>
 
