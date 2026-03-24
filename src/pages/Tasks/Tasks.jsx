@@ -84,8 +84,18 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
   }
 
   const handleLinkChange = async (link) => {
-    alert('link: ' + link)
-    if (!link || !link.includes('t.me/')) return
+    if (!link) return
+    // Нормализуем ссылку — принимаем @username, username, t.me/username, https://t.me/username
+    let normalizedLink = link.trim()
+    if (normalizedLink.startsWith('@')) {
+      normalizedLink = 'https://t.me/' + normalizedLink.slice(1)
+    } else if (!normalizedLink.includes('t.me/')) {
+      normalizedLink = 'https://t.me/' + normalizedLink
+    } else if (!normalizedLink.startsWith('http')) {
+      normalizedLink = 'https://' + normalizedLink
+    }
+    link = normalizedLink
+    setForm(p => ({...p, link}))
     setLoadingCh(true)
     setBotCheck(null)
     try {

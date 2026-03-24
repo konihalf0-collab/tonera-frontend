@@ -81,7 +81,17 @@ export default function Admin() {
   }
 
   const handleLinkChange = async (link) => {
-    if (!link || !link.includes('t.me/')) return
+    if (!link) return
+    let normalizedLink = link.trim()
+    if (normalizedLink.startsWith('@')) {
+      normalizedLink = 'https://t.me/' + normalizedLink.slice(1)
+    } else if (!normalizedLink.includes('t.me/')) {
+      normalizedLink = 'https://t.me/' + normalizedLink
+    } else if (!normalizedLink.startsWith('http')) {
+      normalizedLink = 'https://' + normalizedLink
+    }
+    link = normalizedLink
+    setForm(p => ({...p, link}))
     setLoadingChannel(true)
     setBotCheck(null)
     try {
