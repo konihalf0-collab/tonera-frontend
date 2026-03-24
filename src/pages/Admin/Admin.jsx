@@ -347,7 +347,7 @@ export default function Admin() {
           <div className="users-count">{withdrawals.filter(w=>w.status==='pending').length} ожидают обработки</div>
           {withdrawals.length === 0 && <div className="no-tasks">Нет заявок</div>}
           {withdrawals.map(w => {
-            const addr = w.label?.replace('Вывод на ', '') || '—'
+            const addr = w.label?.startsWith('Вывод на ') ? w.label.replace('Вывод на ', '') : (w.label || '—')
             const amount = Math.abs(parseFloat(w.amount)).toFixed(4)
             return (
               <div key={w.id} className={`withdrawal-item ${w.status}`}>
@@ -355,7 +355,7 @@ export default function Admin() {
                   <div className="wi-user">{w.username || w.first_name || 'Пользователь'}</div>
                   <div className="wi-date">{new Date(w.created_at).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
                   <div className="wi-copy-row">
-                    <div className="wi-addr-short">{addr.slice(0,10)}...{addr.slice(-6)}</div>
+                    <div className="wi-addr-short">{addr.length > 20 ? addr.slice(0,10)+'...'+addr.slice(-6) : addr}</div>
                     <button className="wi-copy-btn" onClick={() => { navigator.clipboard.writeText(addr); showToast('АДРЕС СКОПИРОВАН') }}>📋 Адрес</button>
                     <button className="wi-copy-btn wi-copy-amt" onClick={() => { navigator.clipboard.writeText(amount); showToast('СУММА СКОПИРОВАНА') }}>📋 {amount}</button>
                   </div>
