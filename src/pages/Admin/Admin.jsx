@@ -349,8 +349,11 @@ export default function Admin() {
           <div className="users-count">{withdrawals.filter(w=>w.status==='pending').length} ожидают обработки</div>
           {withdrawals.length === 0 && <div className="no-tasks">Нет заявок</div>}
           {withdrawals.map(w => {
-            const addr = w.label?.startsWith('Вывод на ') ? w.label.replace('Вывод на ', '') : (w.label || '—')
-            const amount = Math.abs(parseFloat(w.amount)).toFixed(4)
+            // Парсим адрес и net сумму из label
+            const labelParts = (w.label || '').split('|net:')
+            const addr = labelParts[0]?.replace('Вывод на ', '') || '—'
+            const netAmount = labelParts[1] ? parseFloat(labelParts[1]).toFixed(4) : Math.abs(parseFloat(w.amount)).toFixed(4)
+            const amount = netAmount
             return (
               <div key={w.id} className={`withdrawal-item ${w.status}`}>
                 <div className="wi-info">
