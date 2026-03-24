@@ -19,6 +19,7 @@ export default function Staking({ user }) {
   const [stakeId, setStakeId] = useState(null)
   const [toast, setToast] = useState('')
   const [mins, setMins] = useState({ deposit: 0.01, withdraw: 0.01, reinvest: 0.001, collect: 0.001 })
+  const [stakingWithdrawFee, setStakingWithdrawFee] = useState(0)
   const timerRef = useRef(null)
   const depRef = useRef(dep)
 
@@ -30,6 +31,7 @@ export default function Staking({ user }) {
     // Загружаем минимумы из настроек
     api.get('/api/staking/info').then(r => {
       if (r.data?.mins) setMins(r.data.mins)
+      if (r.data?.staking_withdraw_fee !== undefined) setStakingWithdrawFee(r.data.staking_withdraw_fee)
     }).catch(() => {})
 
     // Загружаем активный стейк
@@ -217,6 +219,9 @@ export default function Staking({ user }) {
               <input className="mi" type="number" placeholder="0.00" value={amount} onChange={e => setAmount(e.target.value)} autoFocus/>
               <span className="mi-cur">TON</span>
             </div>
+            {modal === 'minus' && stakingWithdrawFee > 0 && (
+              <div className="modal-bonus-note">Комиссия {stakingWithdrawFee}% = {((dep - bonusDep) * stakingWithdrawFee / 100).toFixed(4)} TON</div>
+            )}
             <div className="mhint">
               {modal === 'plus' ? 'Доступно в кошельке: ' : 'Доступно к выводу: '}
               <span>{modal === 'plus' ? wal.toFixed(4) : (dep - bonusDep).toFixed(4)}</span> TON
