@@ -99,3 +99,5 @@
 .bot-check.ok{background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.25);color:#00e676;}
 .bot-check.fail{background:rgba(255,77,106,0.08);border:1px solid rgba(255,77,106,0.25);color:#ff4d6a;}
 .bot-check-hint{margin-top:8px;color:rgba(232,242,255,0.6);font-size:11px;line-height:1.7;}
+.atf-check-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#1a5fff,#3d7fff);border:none;color:#fff;font-size:16px;cursor:pointer;}
+.atf-check-btn:disabled{opacity:.4;}

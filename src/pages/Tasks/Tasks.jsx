@@ -83,23 +83,19 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
     setCompleting(null)
   }
 
-  const handleLinkChange = (link) => {
-    setForm(p => ({...p, link}))
-    if (linkTimer.current) clearTimeout(linkTimer.current)
-    if (!link.includes('t.me/')) return
-    linkTimer.current = setTimeout(async () => {
-      setLoadingCh(true)
-      setBotCheck(null)
-      try {
-        const infoRes = await api.get(`/api/channels/info?link=${encodeURIComponent(link)}`)
-        setForm(p => ({ ...p, title: infoRes.data.title || p.title, channel_title: infoRes.data.title || '', channel_photo: infoRes.data.photo || '' }))
-        if (form.type === 'subscribe') {
-          const checkRes = await api.get(`/api/channels/check?link=${encodeURIComponent(link)}`)
-          setBotCheck(checkRes.data)
-        }
-      } catch {}
-      setLoadingCh(false)
-    }, 800)
+  const handleLinkChange = async (link) => {
+    if (!link || !link.includes('t.me/')) return
+    setLoadingCh(true)
+    setBotCheck(null)
+    try {
+      const infoRes = await api.get(`/api/channels/info?link=${encodeURIComponent(link)}`)
+      setForm(p => ({ ...p, title: infoRes.data.title || p.title, channel_title: infoRes.data.title || '', channel_photo: infoRes.data.photo || '' }))
+      if (form.type === 'subscribe') {
+        const checkRes = await api.get(`/api/channels/check?link=${encodeURIComponent(link)}`)
+        setBotCheck(checkRes.data)
+      }
+    } catch {}
+    setLoadingCh(false)
   }
 
   const handleCreate = async () => {
@@ -193,8 +189,10 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
           <div className="cf-row">
             <div className="cf-label">ССЫЛКА</div>
             <div className="cf-input-wrap">
-              <input className="cf-input" placeholder="https://t.me/username" value={form.link} onChange={e => handleLinkChange(e.target.value)}/>
-              {loadingCh && <div className="cf-spinner"/>}
+              <input className="cf-input" placeholder="https://t.me/username" value={form.link} onChange={e => setForm(p=>({...p,link:e.target.value}))}/>
+              <button className="cf-check-btn" onClick={() => handleLinkChange(form.link)} disabled={loadingCh || !form.link}>
+                {loadingCh ? '...' : '→'}
+              </button>
             </div>
           </div>
 

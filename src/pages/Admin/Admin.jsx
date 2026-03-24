@@ -80,22 +80,19 @@ export default function Admin() {
     setSaving(null)
   }
 
-  const handleLinkChange = (link) => {
-    setForm(p => ({...p, link}))
-    if (linkTimer.current) clearTimeout(linkTimer.current)
-    if (!link.includes('t.me/')) return
-    linkTimer.current = setTimeout(async () => {
-      setLoadingChannel(true)
-      setBotCheck(null)
-      try {
-        const requests = [api.get(`/api/channels/info?link=${encodeURIComponent(link)}`)]
-        if (form.type === 'subscribe') requests.push(api.get(`/api/channels/check?link=${encodeURIComponent(link)}`))
-        const [info, check] = await Promise.all(requests)
-        setForm(p => ({ ...p, title: info.data.title || p.title, channel_title: info.data.title || '', channel_photo: info.data.photo || '', icon: p.type === 'bot' ? '🤖' : '✈️' }))
-        if (check) setBotCheck(check.data)
-      } catch {}
-      setLoadingChannel(false)
-    }, 800)
+  const handleLinkChange = async (link) => {
+    if (!link || !link.includes('t.me/')) return
+    setLoadingChannel(true)
+    setBotCheck(null)
+    try {
+      const infoRes = await api.get(`/api/channels/info?link=${encodeURIComponent(link)}`)
+      setForm(p => ({ ...p, title: infoRes.data.title || p.title, channel_title: infoRes.data.title || '', channel_photo: infoRes.data.photo || '', icon: p.type === 'bot' ? '🤖' : '✈️' }))
+      if (form.type === 'subscribe') {
+        const checkRes = await api.get(`/api/channels/check?link=${encodeURIComponent(link)}`)
+        setBotCheck(checkRes.data)
+      }
+    } catch {}
+    setLoadingChannel(false)
   }
 
   const addTask = async () => {
@@ -243,8 +240,10 @@ export default function Admin() {
             <div className="atf-row">
               <label className="atf-label">ССЫЛКА</label>
               <div className="atf-link-wrap">
-                <input className="atf-input" placeholder="https://t.me/username" value={form.link} onChange={e => handleLinkChange(e.target.value)}/>
-                {loadingChannel && <div className="atf-spinner"/>}
+                <input className="atf-input" placeholder="https://t.me/username" value={form.link} onChange={e => setForm(p=>({...p,link:e.target.value}))}/>
+                <button className="atf-check-btn" onClick={() => handleLinkChange(form.link)} disabled={loadingChannel || !form.link}>
+                  {loadingChannel ? '...' : '→'}
+                </button>
               </div>
             </div>
             {form.channel_photo && (
