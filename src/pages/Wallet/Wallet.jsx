@@ -3,7 +3,7 @@ import { getTransactions } from '../../api/index'
 import { useUserStore } from '../../store/userStore'
 import api from '../../api/index'
 import { TonConnectButton, useTonConnectUI, useTonWallet, toUserFriendlyAddress } from '@tonconnect/ui-react'
-import { Address } from '@ton/ton'
+import { Address } from '@ton/core'
 import './Wallet.css'
 
 const TX_ICONS = {
