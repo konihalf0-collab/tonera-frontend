@@ -42,3 +42,9 @@
 .wm-warn{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(255,179,0,0.7);margin-top:10px;text-align:center;}
 .tx-empty{text-align:center;font-family:'Orbitron',sans-serif;font-size:11px;color:rgba(232,242,255,0.3);padding:20px;}
 .wm-fee{font-family:'DM Sans',sans-serif;font-size:12px;color:#ffb300;margin-top:8px;text-align:center;}
+
+.tc-btn{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:12px;border:none;cursor:pointer;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:.05em;transition:all .2s;}
+.tc-connected{background:rgba(0,152,234,0.15);border:1px solid rgba(0,152,234,0.4);color:#00d4ff;}
+.tc-connected:active{opacity:.8;}
+.tc-disconnected{background:linear-gradient(135deg,#0098EA,#0070b8);color:#fff;box-shadow:0 4px 16px rgba(0,152,234,0.35);}
+.tc-disconnect{margin-left:4px;opacity:.6;font-size:12px;}

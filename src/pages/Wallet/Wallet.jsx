@@ -121,7 +121,18 @@ export default function Wallet({ user }) {
         <div className="wc-usd">≈ ${(balance * 6.5).toFixed(2)} USD</div>
 
         <div className="tc-row">
-          <TonConnectButton />
+          {wallet ? (
+            <button className="tc-btn tc-connected" onClick={() => tonConnectUI.disconnect()}>
+              <svg width="16" height="16" viewBox="0 0 56 56" fill="none"><path d="M28 0C12.536 0 0 12.536 0 28s12.536 28 28 28 28-12.536 28-28S43.464 0 28 0z" fill="#0098EA"/><path d="M37.56 15.63H18.44c-3.52 0-5.74 3.79-3.98 6.86l11.8 20.45c.77 1.34 2.7 1.34 3.47 0l11.8-20.45c1.77-3.06-.45-6.86-3.97-6.86zM26.26 36.28l-2.86-5.16-6.56-11.3c-.37-.63.07-1.42.8-1.42h8.62v17.88zm12.9-16.48-6.56 11.32-2.86 5.16V18.38h8.61c.73 0 1.17.79.81 1.42z" fill="#fff"/></svg>
+              {toUserFriendlyAddress(wallet.account.address).slice(0,6)}...{toUserFriendlyAddress(wallet.account.address).slice(-4)}
+              <span className="tc-disconnect">✕</span>
+            </button>
+          ) : (
+            <button className="tc-btn tc-disconnected" onClick={() => tonConnectUI.openModal()}>
+              <svg width="16" height="16" viewBox="0 0 56 56" fill="none"><path d="M28 0C12.536 0 0 12.536 0 28s12.536 28 28 28 28-12.536 28-28S43.464 0 28 0z" fill="#0098EA"/><path d="M37.56 15.63H18.44c-3.52 0-5.74 3.79-3.98 6.86l11.8 20.45c.77 1.34 2.7 1.34 3.47 0l11.8-20.45c1.77-3.06-.45-6.86-3.97-6.86zM26.26 36.28l-2.86-5.16-6.56-11.3c-.37-.63.07-1.42.8-1.42h8.62v17.88zm12.9-16.48-6.56 11.32-2.86 5.16V18.38h8.61c.73 0 1.17.79.81 1.42z" fill="#fff"/></svg>
+              ПОДКЛЮЧИТЬ КОШЕЛЁК
+            </button>
+          )}
         </div>
 
         <div className="wc-btns">
@@ -168,7 +179,10 @@ export default function Wallet({ user }) {
             {!wallet ? (
               <div className="wm-connect">
                 <div className="wm-hint">Подключи кошелёк чтобы пополнить</div>
-                <TonConnectButton />
+                <button className="tc-btn tc-disconnected" onClick={() => tonConnectUI.openModal()}>
+                  <svg width="16" height="16" viewBox="0 0 56 56" fill="none"><path d="M28 0C12.536 0 0 12.536 0 28s12.536 28 28 28 28-12.536 28-28S43.464 0 28 0z" fill="#0098EA"/><path d="M37.56 15.63H18.44c-3.52 0-5.74 3.79-3.98 6.86l11.8 20.45c.77 1.34 2.7 1.34 3.47 0l11.8-20.45c1.77-3.06-.45-6.86-3.97-6.86zM26.26 36.28l-2.86-5.16-6.56-11.3c-.37-.63.07-1.42.8-1.42h8.62v17.88zm12.9-16.48-6.56 11.32-2.86 5.16V18.38h8.61c.73 0 1.17.79.81 1.42z" fill="#fff"/></svg>
+                  ПОДКЛЮЧИТЬ КОШЕЛЁК
+                </button>
               </div>
             ) : (
               <>
