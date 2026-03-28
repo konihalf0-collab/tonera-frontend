@@ -8,6 +8,17 @@ const RATE_MS = 0.01 / (24 * 60 * 60 * 1000)
 
 export default function Staking({ user }) {
   const { updateBalance, setUser } = useUserStore()
+  const startCooldown = (seconds = 30) => {
+    setCooldown(seconds)
+    if (cooldownRef.current) clearInterval(cooldownRef.current)
+    cooldownRef.current = setInterval(() => {
+      setCooldown(c => {
+        if (c <= 1) { clearInterval(cooldownRef.current); return 0 }
+        return c - 1
+      })
+    }, 1000)
+  }
+
   const reloadUser = async () => { try { const r = await api.get('/api/user/me'); setUser(r.data); setWal(parseFloat(r.data?.balance_ton ?? 0)) } catch {} }
   const [dep, setDep] = useState(0)
   const [bonusDep, setBonusDep] = useState(0)
@@ -19,6 +30,8 @@ export default function Staking({ user }) {
   const [amount, setAmount] = useState('')
   const [stakeId, setStakeId] = useState(null)
   const [toast, setToast] = useState('')
+  const [cooldown, setCooldown] = useState(0)
+  const cooldownRef = useRef(null)
   const [mins, setMins] = useState({ deposit: 0.01, withdraw: 0.01, reinvest: 0.001, collect: 0.001 })
   const [stakingWithdrawFee, setStakingWithdrawFee] = useState(0)
   const timerRef = useRef(null)
@@ -89,12 +102,14 @@ export default function Staking({ user }) {
   const handleCollect = async () => {
     if (income < 1e-9) return
     if (income < mins.collect) { showToast(`МИН. СБОР: ${mins.collect} TON`); return }
+    if (cooldown > 0) { showToast(`ПОДОЖДИТЕ ${cooldown} СЕК`); return }
     if (income < mins.collect) { showToast(`МИН. СБОР: ${mins.collect} TON`); return }
     const v = snap()
     setAcc(0); setT0(Date.now())
     setWal(w => w + v)
     updateBalance(v)
     showToast(`СОБРАНО +${v.toFixed(6)} TON`)
+    startCooldown(Math.floor(Math.random() * 120) + 10)
     try {
       if (stakeId) {
         await collectStake(stakeId)
@@ -106,11 +121,13 @@ export default function Staking({ user }) {
   const handleReinvest = async () => {
     if (income < 1e-9) return
     if (income < mins.reinvest) { showToast(`МИН. РЕИНВЕСТ: ${mins.reinvest} TON`); return }
+    if (cooldown > 0) { showToast(`ПОДОЖДИТЕ ${cooldown} СЕК`); return }
     const v = snap()
     const newDep = dep + v
     setAcc(0); setT0(Date.now())
     setDep(newDep)
     showToast(`РЕИНВЕСТ +${v.toFixed(6)} TON`)
+    startCooldown(Math.floor(Math.random() * 120) + 10)
     try {
       if (stakeId) {
         await reinvestStake(stakeId, v, newDep)
@@ -193,8 +210,8 @@ export default function Staking({ user }) {
           <span className="inc-ton">TON</span>
         </div>
         <div className="inc-btns">
-          <button className="ibtn ibtn-c" onClick={handleCollect}>Собрать</button>
-          <button className="ibtn ibtn-r" onClick={handleReinvest}>Реинвест</button>
+          <button className="ibtn ibtn-c" onClick={handleCollect} disabled={cooldown > 0}>{cooldown > 0 ? `${cooldown}с` : 'Собрать'}</button>
+          <button className="ibtn ibtn-r" onClick={handleReinvest} disabled={cooldown > 0}>{cooldown > 0 ? `${cooldown}с` : 'Реинвест'}</button>
         </div>
       </div>
 
