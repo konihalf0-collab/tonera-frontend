@@ -8,6 +8,7 @@ import Tasks from './pages/Tasks/Tasks'
 import Referrals from './pages/Referrals/Referrals'
 import Wallet from './pages/Wallet/Wallet'
 import Admin from './pages/Admin/Admin'
+import Spin from './pages/Spin/Spin'
 import WelcomeBonus from './components/WelcomeBonus'
 import './App.css'
 
@@ -19,6 +20,7 @@ const TABS = [
   { id: 'tasks',     label: 'ЗАДАНИЯ',   icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="1.8"/><path d="M8 12l3 3 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg> },
   { id: 'referrals', label: 'РЕФЕРАЛЫ',  icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="3" stroke="currentColor" strokeWidth="1.8"/><path d="M3 20c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/><circle cx="18" cy="8" r="2.5" stroke="currentColor" strokeWidth="1.8"/><path d="M14.5 20c0-2.485 1.567-4.5 3.5-4.5s3.5 2.015 3.5 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
   { id: 'wallet',    label: 'КОШЕЛЁК',   icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="14" rx="2" stroke="currentColor" strokeWidth="1.8"/><path d="M16 13a1 1 0 100 2 1 1 0 000-2z" fill="currentColor"/><path d="M2 10h20" stroke="currentColor" strokeWidth="1.8"/></svg> },
+  { id: 'spin',      label: 'СПИН',      icon: <span style={{fontSize:20}}>🎰</span> },
   { id: 'admin',     label: 'АДМИН',     icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg> },
 ]
 
@@ -38,7 +40,7 @@ export default function App() {
   const goCreate = () => { setTasksView('create'); setTab('tasks') }
   const goMyTasks = () => { setTasksView('my'); setTab('tasks') }
   const isAdmin = Number(user?.telegram_id) === ADMIN_ID
-  const visibleTabs = TABS.filter(t => (t.id !== 'admin' || isAdmin) && t.id !== 'customer')
+  const visibleTabs = TABS.filter(t => (t.id !== 'admin' || isAdmin) && t.id !== 'customer' && t.id !== 'spin' || t.id === 'spin')
   const balance = parseFloat(user?.balance_ton ?? 0)
 
   return (
@@ -80,6 +82,7 @@ export default function App() {
         {tab === 'tasks'     && <Tasks initialView={tasksView} onViewChange={setTasksView} />}
         {tab === 'referrals' && <Referrals user={user} />}
         {tab === 'wallet'    && <Wallet    user={user} />}
+        {tab === 'spin'      && <Spin      user={user} />}
         {tab === 'admin'     && <Admin     />}
       </div>
 
