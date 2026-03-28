@@ -1,0 +1,18 @@
+.spin-wrap{padding:16px;max-width:420px;margin:0 auto;}
+.spin-toast{position:fixed;top:90px;left:50%;transform:translateX(-50%);background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);border-radius:12px;padding:10px 20px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:#00e676;white-space:nowrap;z-index:100;}
+.spin-toast.err{background:rgba(255,77,106,0.12);border-color:rgba(255,77,106,0.3);color:#ff4d6a;}
+.spin-title{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#e8f2ff;text-align:center;margin-bottom:6px;letter-spacing:.05em;}
+.spin-balance{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(232,242,255,0.5);text-align:center;margin-bottom:20px;}
+.spin-balance span{color:#00d4ff;font-weight:700;}
+.spin-wheel-wrap{position:relative;display:flex;justify-content:center;margin-bottom:16px;}
+.spin-arrow{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:28px;color:#00d4ff;z-index:2;filter:drop-shadow(0 0 8px #00d4ff);}
+.spin-canvas{border-radius:50%;box-shadow:0 0 30px rgba(0,212,255,0.2),0 0 60px rgba(0,212,255,0.08);border:2px solid rgba(0,212,255,0.3);}
+.spin-result{text-align:center;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;padding:12px;border-radius:12px;margin-bottom:14px;}
+.spin-result.win{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:#00e676;}
+.spin-result.nothing{background:rgba(255,77,106,0.08);border:1px solid rgba(255,77,106,0.2);color:rgba(232,242,255,0.5);}
+.spin-btn{width:100%;padding:16px;background:linear-gradient(135deg,#1a5fff,#0930cc);border:none;border-radius:14px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.06em;box-shadow:0 4px 20px rgba(26,95,255,0.4);margin-bottom:20px;}
+.spin-btn:disabled{opacity:.5;cursor:not-allowed;}
+.spin-sectors{background:#0e1c3a;border:1px solid rgba(26,95,255,0.2);border-radius:14px;padding:14px;}
+.ss-title{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:rgba(232,242,255,0.3);letter-spacing:.12em;margin-bottom:10px;}
+.ss-item{display:flex;align-items:center;gap:10px;padding:6px 0;font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(232,242,255,0.7);}
+.ss-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:1px solid rgba(0,212,255,0.3);}

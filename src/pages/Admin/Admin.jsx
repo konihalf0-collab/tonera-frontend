@@ -25,6 +25,14 @@ const SETTING_GROUPS = [
     ]
   },
   {
+    id: 'spin',
+    title: '🎰 Спин',
+    settings: [
+      { key: 'spin_price',   label: 'Цена спина (TON)' },
+      { key: 'spin_enabled', label: 'Включён (1/0)' },
+    ]
+  },
+  {
     id: 'wallet',
     title: '💎 Кошелёк проекта',
     settings: [
