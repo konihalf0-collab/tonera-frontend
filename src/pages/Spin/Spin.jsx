@@ -101,9 +101,10 @@ export default function Spin({ user }) {
       const { result: res, sectorIndex } = r.data
 
       const arc = (Math.PI * 2) / SECTORS.length
-      const targetAngle = -(arc * sectorIndex + arc / 2)
+      // Стрелка сверху = -PI/2, нужно чтобы центр нужного сектора оказался там
+      const targetSectorAngle = arc * sectorIndex + arc / 2
       const spins = 5 + Math.random() * 3
-      const finalRot = targetAngle + spins * Math.PI * 2
+      const finalRot = -targetSectorAngle - Math.PI / 2 + spins * Math.PI * 2
 
       // Анимация
       const start = performance.now()
