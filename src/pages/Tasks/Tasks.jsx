@@ -30,6 +30,8 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
   const [loadingCh, setLoadingCh] = useState(false)
   const [creating, setCreating] = useState(false)
   const [botCheck, setBotCheck] = useState(null)
+  const [buyModal, setBuyModal] = useState(null)
+  const [buyCount, setBuyCount] = useState(100)
   const linkTimer = useRef(null)
 
   const [pricing, setPricing] = useState({ task_price: 0.002, task_reward: 0.001, task_ref_bonus: 0.0005, task_project_fee: 0.0005 })
@@ -82,6 +84,33 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
       showToast(msg, true)
     }
     setCompleting(null)
+  }
+
+  const handlePause = async (taskId) => {
+    try {
+      await api.post(`/api/tasks/${taskId}/pause`)
+      setMyTasks(prev => prev.map(t => t.id === taskId ? {...t, active: false} : t))
+      showToast('ЗАДАНИЕ ПРИОСТАНОВЛЕНО')
+    } catch { showToast('ОШИБКА', true) }
+  }
+
+  const handleResume = async (taskId) => {
+    try {
+      await api.post(`/api/tasks/${taskId}/resume`)
+      setMyTasks(prev => prev.map(t => t.id === taskId ? {...t, active: true} : t))
+      showToast('ЗАДАНИЕ ВОЗОБНОВЛЕНО')
+    } catch (e) { showToast(e?.response?.data?.error || 'ОШИБКА', true) }
+  }
+
+  const handleBuyMore = async () => {
+    if (!buyModal) return
+    try {
+      await api.post(`/api/tasks/${buyModal.id}/buy-more`, { count: buyCount })
+      const r = await getMyTasks()
+      setMyTasks(r.data || [])
+      setBuyModal(null)
+      showToast(`ДОКУПЛЕНО ${buyCount} ВЫПОЛНЕНИЙ`)
+    } catch (e) { showToast(e?.response?.data?.error || 'ОШИБКА', true) }
   }
 
   const handleLinkChange = async (link) => {
@@ -266,6 +295,26 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
           </button>
         </div>
       )}
+      {/* BUY MORE MODAL */}
+      {buyModal && (
+        <div className="modal-overlay" onClick={e => e.target===e.currentTarget && setBuyModal(null)}>
+          <div className="modal-inner">
+            <div className="modal-title">ДОКУПИТЬ ВЫПОЛНЕНИЯ</div>
+            <div className="mhint" style={{marginBottom:12}}>{buyModal.channel_title||buyModal.title}</div>
+            <div className="count-btns" style={{marginBottom:14}}>
+              {[50,100,200,500,1000].map(c => (
+                <button key={c} className={`count-btn ${buyCount===c?'on':''}`} onClick={() => setBuyCount(c)}>{c}</button>
+              ))}
+            </div>
+            <div className="mhint">Стоимость: <span style={{color:'#00d4ff'}}>{(buyCount*0.002).toFixed(4)} TON</span></div>
+            <div className="mbtns" style={{marginTop:14}}>
+              <button className="mbtn mb-c" onClick={() => setBuyModal(null)}>Отмена</button>
+              <button className="mbtn mb-ok" onClick={handleBuyMore}>ДОКУПИТЬ</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* MY TASKS VIEW */}
       {view === 'my' && (
         <div className="my-tasks">
@@ -275,7 +324,11 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
               <div className="empty-text">Нет созданных заданий</div>
             </div>
           ) : (
-            myTasks.map(task => (
+            myTasks.map(task => {
+              const isPending = !task.active && task.executions === 0
+              const isDone = task.executions >= task.max_executions
+              const isPaused = !task.active && !isPending && !isDone
+              return (
               <div key={task.id} className="my-task-card">
                 <div className="mt-header">
                   {task.channel_photo
@@ -286,8 +339,8 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
                     <div className="mt-title">{task.channel_title || task.title}</div>
                     <div className="mt-link">{task.link}</div>
                   </div>
-                  <div className={`mt-status ${task.active ? 'active' : 'done'}`}>
-                    {task.active ? 'АКТИВНО' : 'ЗАВЕРШЕНО'}
+                  <div className={`mt-status ${task.active ? 'active' : isPending ? 'pending' : isDone ? 'done' : 'paused'}`}>
+                    {isPending ? '⏳ ПРОВЕРКА' : task.active ? 'АКТИВНО' : isDone ? 'ЗАВЕРШЕНО' : '⏸ ПАУЗА'}
                   </div>
                 </div>
                 <div className="mt-progress">
@@ -300,8 +353,19 @@ export default function Tasks({ initialView = 'list', onViewChange }) {
                   <div className="mt-stat"><span>Бюджет</span><span>{parseFloat(task.budget).toFixed(4)} TON</span></div>
                   <div className="mt-stat"><span>Потрачено</span><span>{(task.executions * 0.002).toFixed(4)} TON</span></div>
                 </div>
+                {!isPending && (
+                  <div className="mt-actions">
+                    {!isDone && (
+                      task.active
+                        ? <button className="mt-action-btn pause" onClick={() => handlePause(task.id)}>⏸ Пауза</button>
+                        : <button className="mt-action-btn resume" onClick={() => handleResume(task.id)}>▶ Запустить</button>
+                    )}
+                    <button className="mt-action-btn buy" onClick={() => setBuyModal(task)}>+ Докупить</button>
+                  </div>
+                )}
               </div>
-            ))
+              )
+            })
           )}
         </div>
       )}

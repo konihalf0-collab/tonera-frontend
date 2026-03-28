@@ -120,3 +120,14 @@
 .cf-check-btn:disabled{opacity:.4;cursor:not-allowed;}
 .cf-load-btn{width:100%;margin-top:8px;padding:11px;background:#0e1c3a;border:1px solid rgba(26,95,255,0.4);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:#00d4ff;cursor:pointer;letter-spacing:.05em;}
 .cf-load-btn:disabled{opacity:.4;}
+
+.mt-status.pending{background:rgba(255,179,0,0.12);color:#ffb300;border:1px solid rgba(255,179,0,0.3);}
+.mt-status.paused{background:rgba(232,242,255,0.05);color:rgba(232,242,255,0.4);border:1px solid rgba(232,242,255,0.1);}
+.mt-actions{display:flex;gap:8px;margin-top:10px;}
+.mt-action-btn{flex:1;padding:9px;border-radius:10px;border:none;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;cursor:pointer;letter-spacing:.05em;}
+.mt-action-btn.pause{background:rgba(255,179,0,0.12);border:1px solid rgba(255,179,0,0.3);color:#ffb300;}
+.mt-action-btn.resume{background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);color:#00e676;}
+.mt-action-btn.buy{background:linear-gradient(135deg,#1a5fff,#3d7fff);color:#fff;}
+.count-btns{display:flex;gap:6px;}
+.count-btn{flex:1;padding:10px 4px;border-radius:10px;border:1px solid rgba(26,95,255,0.3);background:#0b1630;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:rgba(232,242,255,0.5);cursor:pointer;}
+.count-btn.on{background:linear-gradient(135deg,rgba(26,95,255,0.3),rgba(0,212,255,0.1));border-color:#00d4ff;color:#00d4ff;}
