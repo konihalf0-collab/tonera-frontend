@@ -26,7 +26,7 @@
 .wallet-toast{position:fixed;top:90px;left:50%;transform:translateX(-50%);background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);border-radius:12px;padding:10px 20px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:.08em;color:#00e676;white-space:nowrap;z-index:100;}
 .wallet-toast.err{background:rgba(255,77,106,0.12);border-color:rgba(255,77,106,0.3);color:#ff4d6a;}
 .tc-row{display:flex;justify-content:center;margin:12px 0 4px;}
-.wmodal{background:#070e20;border:1px solid rgba(26,95,255,0.3);border-radius:20px;padding:24px 20px;width:100%;max-width:320px;}
+.wmodal{background:#070e20;border:1px solid rgba(26,95,255,0.3);border-radius:20px;padding:24px 20px;width:100%;max-width:100%;}
 .wm-title{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#e8f2ff;letter-spacing:.08em;margin-bottom:14px;text-align:center;}
 .wm-info{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(232,242,255,0.5);margin-bottom:14px;text-align:center;}
 .wm-info span{color:#00d4ff;font-weight:700;}
@@ -48,3 +48,4 @@
 .tc-connected:active{opacity:.8;}
 .tc-disconnected{background:linear-gradient(135deg,#0098EA,#0070b8);color:#fff;box-shadow:0 4px 16px rgba(0,152,234,0.35);}
 .tc-disconnect{margin-left:4px;opacity:.6;font-size:12px;}
+.wallet-modal-overlay{position:fixed;inset:0;background:rgba(5,10,26,0.92);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;}
