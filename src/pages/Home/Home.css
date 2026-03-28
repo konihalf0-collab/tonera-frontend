@@ -24,3 +24,7 @@
 .qa-lbl{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;color:rgba(232,242,255,0.4);letter-spacing:.04em;}
 .si-purple{background:rgba(124,58,237,0.15);color:#a855f7;}
 .qa-highlight{border-color:rgba(124,58,237,0.3);}
+
+.home-uptime-card{background:linear-gradient(135deg,rgba(0,212,255,0.05),rgba(26,95,255,0.05));border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:14px 18px;margin-bottom:14px;text-align:center;}
+.hup-label{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:rgba(232,242,255,0.4);letter-spacing:.12em;margin-bottom:6px;}
+.hup-timer{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:700;color:#00d4ff;letter-spacing:.05em;}

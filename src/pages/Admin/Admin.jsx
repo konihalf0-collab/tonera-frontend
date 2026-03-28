@@ -32,6 +32,7 @@ const SETTING_GROUPS = [
       { key: 'min_deposit_ton', label: 'Мин. сумма депозита (TON)' },
       { key: 'withdraw_fee',    label: 'Комиссия за вывод (TON)' },
       { key: 'min_withdraw_ton', label: 'Минимальный вывод (TON)' },
+      { key: 'launch_date',    label: 'Дата запуска проекта (ГГГГ-ММ-ДД)' },
     ]
   },
   {
@@ -67,6 +68,7 @@ export default function Admin() {
   const [usersTab, setUsersTab] = useState('all') // all | donors
   const [withdrawals, setWithdrawals] = useState([])
   const [maintenance, setMaintenance] = useState(false)
+  const [uptime, setUptime] = useState('')
   const [dbBackup, setDbBackup] = useState(null)
   const linkTimer = useRef(null)
 
@@ -165,6 +167,22 @@ export default function Admin() {
       showToast('РАЗБЛОКИРОВАН')
     } catch { showToast('ОШИБКА', true) }
   }
+
+  useEffect(() => {
+    const launchDate = settings?.launch_date || '2025-03-01'
+    const START = new Date(launchDate)
+    const update = () => {
+      const diff = Date.now() - START.getTime()
+      const days = Math.floor(diff / 86400000)
+      const hours = Math.floor((diff % 86400000) / 3600000)
+      const mins = Math.floor((diff % 3600000) / 60000)
+      const secs = Math.floor((diff % 60000) / 1000)
+      setUptime(`${days}д ${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`)
+    }
+    update()
+    const t = setInterval(update, 1000)
+    return () => clearInterval(t)
+  }, [])
 
   const toggleMaintenance = async () => {
     try {
@@ -464,6 +482,10 @@ export default function Admin() {
       {/* SYSTEM */}
       {tab === 'system' && (
         <div className="admin-section">
+          <div className="system-card">
+            <div className="sys-title">⏱ ПРОЕКТ РАБОТАЕТ</div>
+            <div style={{fontFamily:'Orbitron,sans-serif',fontSize:22,fontWeight:700,color:'#00d4ff',textAlign:'center',padding:'10px 0',letterSpacing:'.05em'}}>{uptime}</div>
+          </div>
           <div className="system-card">
             <div className="sys-title">🔧 ТЕХ ОБСЛУЖИВАНИЕ</div>
             <div className="sys-desc">При включении юзеры не смогут зайти в приложение</div>

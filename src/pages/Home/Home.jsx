@@ -9,6 +9,22 @@ export default function Home({ user, onTab, onCreate, onMyTasks }) {
   const [tasksDone, setTasksDone] = useState(null)
 
   useEffect(() => {
+    api.get('/api/staking/info').then(r => {
+      const launch = r.data?.launch_date || '2025-03-01'
+      const START = new Date(launch)
+      const update = () => {
+        const diff = Date.now() - START.getTime()
+        const days = Math.floor(diff / 86400000)
+        const hours = Math.floor((diff % 86400000) / 3600000)
+        const mins = Math.floor((diff % 3600000) / 60000)
+        const secs = Math.floor((diff % 60000) / 1000)
+        setUptime(`${days}д ${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`)
+      }
+      update()
+      const t = setInterval(update, 1000)
+      return () => clearInterval(t)
+    }).catch(() => {})
+
     getTasks().then(r => {
       const done = (r.data || []).filter(t => t.completed).length
       setTasksDone(done)
