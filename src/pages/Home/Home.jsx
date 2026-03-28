@@ -12,7 +12,7 @@ export default function Home({ user, onTab, onCreate, onMyTasks }) {
 
   useEffect(() => {
     api.get('/api/staking/info').then(r => {
-      const launch = r.data?.launch_date || '2025-03-01'
+      const launch = r.data?.prices?.launch_date || r.data?.launch_date || '2025-03-01'
       const START = new Date(launch)
       const update = () => {
         const diff = Date.now() - START.getTime()
