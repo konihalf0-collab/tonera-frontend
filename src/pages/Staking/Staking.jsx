@@ -30,6 +30,7 @@ export default function Staking({ user }) {
   const [amount, setAmount] = useState('')
   const [stakeId, setStakeId] = useState(null)
   const [toast, setToast] = useState('')
+  const [confirming, setConfirming] = useState(false)
   const [cooldown, setCooldown] = useState(0)
   const cooldownRef = useRef(null)
   const [mins, setMins] = useState({ deposit: 0.01, withdraw: 0.01, reinvest: 0.001, collect: 0.001 })
@@ -139,8 +140,10 @@ export default function Staking({ user }) {
   }
 
   const handleConfirm = async () => {
+    if (confirming) return
     const val = parseFloat(amount)
     if (!val || val <= 0) { showToast('ВВЕДИ СУММУ'); return }
+    setConfirming(true)
     if (modal === 'plus') {
       if (val < mins.deposit) { showToast(`МИН. ДЕПОЗИТ: ${mins.deposit} TON`); return }
       if (val > wal) { showToast('НЕДОСТАТОЧНО СРЕДСТВ'); return }
@@ -171,6 +174,7 @@ export default function Staking({ user }) {
       showToast(`ВЫВЕДЕНО ${val.toFixed(4)} TON`)
     }
     setModal(null); setAmount('')
+    setConfirming(false)
   }
 
   return (
@@ -249,7 +253,7 @@ export default function Staking({ user }) {
             </div>
             <div className="mbtns">
               <button className="mbtn mb-c" onClick={() => setModal(null)}>Отмена</button>
-              <button className="mbtn mb-ok" onClick={handleConfirm}>Подтвердить</button>
+              <button className="mbtn mb-ok" onClick={handleConfirm} disabled={confirming}>{confirming ? '...' : 'Подтвердить'}</button>
             </div>
           </div>
         </div>
