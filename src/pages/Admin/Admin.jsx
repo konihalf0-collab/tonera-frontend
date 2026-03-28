@@ -182,7 +182,7 @@ export default function Admin() {
     update()
     const t = setInterval(update, 1000)
     return () => clearInterval(t)
-  }, [])
+  }, [settings?.launch_date])
 
   const toggleMaintenance = async () => {
     try {
@@ -337,7 +337,7 @@ export default function Admin() {
                 <div key={s.key} className="setting-item">
                   <div className="setting-label">{s.label}</div>
                   <div className="setting-row">
-                    {s.key === 'project_wallet' ? (
+                    {s.key === 'project_wallet' || s.key === 'launch_date' ? (
                       <div style={{flex:1,display:'flex',flexDirection:'column',gap:6}}>
                         <div style={{padding:'10px 14px',background:'#0b1630',border:'1px solid rgba(26,95,255,0.4)',borderRadius:10,fontFamily:'Orbitron,sans-serif',fontSize:9,color:'#00d4ff',wordBreak:'break-all',lineHeight:1.6,minHeight:40}}>
                           {settings[s.key] || 'Не задан'}
