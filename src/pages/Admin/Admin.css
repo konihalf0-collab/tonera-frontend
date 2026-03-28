@@ -144,3 +144,11 @@
 .ut-tx-amt{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;flex-shrink:0;margin-left:8px;}
 .ut-tx-amt.pos{color:#00e676;}
 .ut-tx-amt.neg{color:#ff4d6a;}
+
+.stats-section-title{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:rgba(232,242,255,0.3);letter-spacing:.12em;margin:14px 0 8px;}
+.astat-card.fee{border-color:rgba(255,179,0,0.3);background:rgba(255,179,0,0.05);}
+.astat-card.fee .astat-val{color:#ffb300;}
+.astat-card.green{border-color:rgba(0,230,118,0.3);background:rgba(0,230,118,0.05);}
+.astat-card.green .astat-val{color:#00e676;}
+.astat-card.red{border-color:rgba(255,77,106,0.3);background:rgba(255,77,106,0.05);}
+.astat-card.red .astat-val{color:#ff4d6a;}
