@@ -159,3 +159,7 @@
 .sys-toggle{width:100%;padding:12px;border-radius:12px;border:none;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;cursor:pointer;background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);color:#00e676;}
 .sys-toggle.on{background:rgba(255,77,106,0.12);border-color:rgba(255,77,106,0.3);color:#ff4d6a;}
 .sys-btn{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(26,95,255,0.4);background:#0b1630;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:#00d4ff;cursor:pointer;}
+
+.admin-tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 10px;min-width:48px;}
+.at-icon{font-size:18px;line-height:1;}
+.at-hint{font-size:7px;font-weight:700;letter-spacing:.06em;opacity:.7;}
