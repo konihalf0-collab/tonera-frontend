@@ -186,16 +186,6 @@ export default function Staking({ user }) {
         </div>
       </div>
 
-      <div className="stake-row income-periods">
-        <div className="sr-label">ДОХОД</div>
-        <div className="income-grid">
-          <div className="ip-item"><div className="ip-val">{(dep * 0.01).toFixed(4)}</div><div className="ip-lbl">В ДЕНЬ</div></div>
-          <div className="ip-item"><div className="ip-val">{(dep * 0.01 * 7).toFixed(4)}</div><div className="ip-lbl">В НЕДЕЛЮ</div></div>
-          <div className="ip-item"><div className="ip-val">{(dep * 0.01 * 30).toFixed(4)}</div><div className="ip-lbl">В МЕСЯЦ</div></div>
-          <div className="ip-item"><div className="ip-val">{(dep * 0.01 * 365).toFixed(4)}</div><div className="ip-lbl">В ГОД</div></div>
-        </div>
-      </div>
-
       <div className="income-card">
         <div className="inc-lbl">ДОХОД</div>
         <div className="inc-row">
@@ -205,6 +195,16 @@ export default function Staking({ user }) {
         <div className="inc-btns">
           <button className="ibtn ibtn-c" onClick={handleCollect}>Собрать</button>
           <button className="ibtn ibtn-r" onClick={handleReinvest}>Реинвест</button>
+        </div>
+      </div>
+
+      <div className="stake-row income-periods">
+        <div className="sr-label">ДОХОД</div>
+        <div className="income-grid">
+          <div className="ip-item"><div className="ip-val">{(dep * 0.01).toFixed(4)}</div><div className="ip-lbl">В ДЕНЬ</div></div>
+          <div className="ip-item"><div className="ip-val">{(dep * 0.01 * 7).toFixed(4)}</div><div className="ip-lbl">В НЕДЕЛЮ</div></div>
+          <div className="ip-item"><div className="ip-val">{(dep * 0.01 * 30).toFixed(4)}</div><div className="ip-lbl">В МЕСЯЦ</div></div>
+          <div className="ip-item"><div className="ip-val">{(dep * 0.01 * 365).toFixed(4)}</div><div className="ip-lbl">В ГОД</div></div>
         </div>
       </div>
 
