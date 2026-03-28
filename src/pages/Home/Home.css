@@ -28,3 +28,9 @@
 .home-uptime-card{background:linear-gradient(135deg,rgba(0,212,255,0.05),rgba(26,95,255,0.05));border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:14px 18px;margin-bottom:14px;text-align:center;}
 .hup-label{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:rgba(232,242,255,0.4);letter-spacing:.12em;margin-bottom:6px;}
 .hup-timer{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:700;color:#00d4ff;letter-spacing:.05em;}
+
+.home-uptime-card{background:linear-gradient(135deg,rgba(0,212,255,0.05),rgba(26,95,255,0.05));border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:14px 18px;margin-bottom:14px;text-align:center;}
+.hup-label{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:rgba(232,242,255,0.4);letter-spacing:.12em;margin-bottom:6px;}
+.hup-days{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;color:#00d4ff;line-height:1;}
+.hup-timer{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:700;color:rgba(0,212,255,0.6);margin-top:4px;}
+.hup-date{font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(232,242,255,0.3);margin-top:6px;}

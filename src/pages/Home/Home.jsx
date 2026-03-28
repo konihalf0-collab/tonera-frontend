@@ -8,6 +8,7 @@ export default function Home({ user, onTab, onCreate, onMyTasks }) {
   const username = user?.username || user?.first_name || 'Пользователь'
   const [stakeTotal, setStakeTotal] = useState(null)
   const [tasksDone, setTasksDone] = useState(null)
+  const [uptime, setUptime] = useState({ days: 0, time: '00:00:00', date: '' })
 
   useEffect(() => {
     api.get('/api/staking/info').then(r => {
@@ -19,7 +20,11 @@ export default function Home({ user, onTab, onCreate, onMyTasks }) {
         const hours = Math.floor((diff % 86400000) / 3600000)
         const mins = Math.floor((diff % 3600000) / 60000)
         const secs = Math.floor((diff % 60000) / 1000)
-        setUptime(`${days}д ${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`)
+        setUptime({
+          days,
+          time: `${String(hours).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`,
+          date: START.toLocaleDateString('ru', { day: 'numeric', month: 'long', year: 'numeric' })
+        })
       }
       update()
       const t = setInterval(update, 1000)
@@ -42,6 +47,13 @@ export default function Home({ user, onTab, onCreate, onMyTasks }) {
       <div className="home-greeting">
         <span className="hi">Привет, {username} 👋</span>
         <span className="sub">Твой крипто-дашборд</span>
+      </div>
+
+      <div className="home-uptime-card">
+        <div className="hup-label">⏱ ПРОЕКТ РАБОТАЕТ</div>
+        <div className="hup-days">{uptime.days} дней</div>
+        <div className="hup-timer">{uptime.time}</div>
+        {uptime.date && <div className="hup-date">с {uptime.date}</div>}
       </div>
 
       <div className="stats-grid">
