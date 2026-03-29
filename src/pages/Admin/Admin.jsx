@@ -4,6 +4,11 @@ import './Admin.css'
 
 const SETTING_GROUPS = [
   {
+    id: 'spin_custom',
+    title: '🎰 Спин',
+    settings: []
+  },
+  {
     id: 'staking',
     title: '📈 Стейкинг',
     settings: [
