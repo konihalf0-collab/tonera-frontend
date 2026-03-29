@@ -362,7 +362,7 @@ export default function Trading({ user, onBack }) {
         <button className="tr-ctrl-btn" onClick={zoomIn}>+</button>
         {offsetXRef.current > 0 && <button className="tr-ctrl-btn tr-live-btn" onClick={() => { offsetXRef.current = 0; drawChart() }}>▶ LIVE</button>}
       </div>
-      <div className="tr-chart-wrap" style={{touchAction:'pan-y'}} style={{cursor:isDragging.current?'grabbing':'grab'}}
+      <div className="tr-chart-wrap" style={{touchAction:'pan-y',cursor:isDragging.current?'grabbing':'grab'}}
         onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
         onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
         onWheel={onWheel}>

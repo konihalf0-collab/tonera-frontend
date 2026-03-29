@@ -6,8 +6,6 @@
 .tr-title{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:#e8f2ff;flex:1;}
 .tr-balance{font-family:'Orbitron',sans-serif;font-size:11px;color:#00d4ff;font-weight:700;}
 .tr-tf-row{display:flex;gap:5px;align-items:center;margin-bottom:8px;}
-.tr-tf-btn{padding:5px 10px;border-radius:7px;border:1px solid rgba(26,95,255,0.3);background:#0b1630;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:rgba(232,242,255,0.5);cursor:pointer;}
-.tr-tf-btn.on{background:rgba(26,95,255,0.2);border-color:#00d4ff;color:#00d4ff;}
 .tr-live-price{margin-left:auto;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;color:#00d4ff;}
 .tr-reset-btn{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:7px;padding:5px 10px;font-family:'Orbitron',sans-serif;font-size:10px;color:#00d4ff;cursor:pointer;}
 .tr-chart-wrap{border:1px solid rgba(26,95,255,0.15);border-radius:14px;overflow:hidden;margin-bottom:12px;cursor:grab;}
