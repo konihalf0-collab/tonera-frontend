@@ -43,6 +43,7 @@ export default function Trading({ user, onBack }) {
   const isDragging = useRef(false)
   const lastX = useRef(0)
   const [, forceRedraw] = useState(0)
+  const balance = parseFloat(user?.balance_ton ?? 0)
 
   useEffect(() => {
     api.get('/api/trading/info').then(r => setConfig(r.data)).catch(() => {})
