@@ -189,7 +189,9 @@ export default function Spin({ user }) {
               <div style={{fontFamily:'Orbitron,sans-serif',fontSize:9,color:'rgba(232,242,255,0.3)',marginTop:2}}>{new Date(h.created_at).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
             </div>
             {parseFloat(h.amount) > 0
-              ? <div style={{fontFamily:'Orbitron,sans-serif',fontSize:12,fontWeight:700,color:h.label?.includes('ДЖЕКПОТ')?'#ffb300':'#00e676'}}>+{parseFloat(h.amount).toFixed(4)} TON</div>
+              ? <div style={{fontFamily:'Orbitron,sans-serif',fontSize:12,fontWeight:700,color:h.label?.includes('ДЖЕКПОТ')?'#ffb300':'#00e676'}}>
+                  {h.label?.includes('ДЖЕКПОТ') ? `🎰 ДЖЕКПОТ` : `🎉 +${parseFloat(h.amount).toFixed(4)} TON`}
+                </div>
               : <div style={{fontFamily:'Orbitron,sans-serif',fontSize:11,color:'rgba(232,242,255,0.35)'}}>😢 Ничего</div>
             }
           </div>
