@@ -295,8 +295,8 @@ export default function Trading({ user, onBack }) {
     drawChart()
   }
   const zoomOut = () => {
-    CANDLE_W_REF.current = Math.max(CANDLE_W_REF.current - 2, 3)
-    CANDLE_GAP_REF.current = Math.min(CANDLE_GAP_REF.current + 0.5, 4)
+    CANDLE_W_REF.current = Math.max(CANDLE_W_REF.current - 2, 4)
+    CANDLE_GAP_REF.current = Math.min(CANDLE_GAP_REF.current + 0.5, 3)
     drawChart()
   }
 
@@ -362,7 +362,7 @@ export default function Trading({ user, onBack }) {
         <button className="tr-ctrl-btn" onClick={zoomIn}>+</button>
         {offsetXRef.current > 0 && <button className="tr-ctrl-btn tr-live-btn" onClick={() => { offsetXRef.current = 0; drawChart() }}>▶ LIVE</button>}
       </div>
-      <div className="tr-chart-wrap" style={{cursor:isDragging.current?'grabbing':'grab'}}
+      <div className="tr-chart-wrap" style={{touchAction:'pan-y'}} style={{cursor:isDragging.current?'grabbing':'grab'}}
         onTouchStart={onTouchStart} onTouchMove={onTouchMove} onTouchEnd={onTouchEnd}
         onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
         onWheel={onWheel}>
