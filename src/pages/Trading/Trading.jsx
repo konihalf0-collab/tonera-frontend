@@ -75,7 +75,7 @@ export default function Trading({ user, onBack }) {
         const won = b.direction === 'up' ? price > b.startPrice : price < b.startPrice
         betRef.current = null
         setBet(null)
-        finishBet(won, b.amount, b.direction)
+        finishBet(won, b.amount, b.direction, b.startPrice, price)
       }
     }
     ws.onerror = () => setTimeout(connectWS, 3000)
@@ -225,8 +225,9 @@ export default function Trading({ user, onBack }) {
     clearInterval(timerRef.current)
     setCountdown(0)
     try {
-      const r = await api.post('/api/trading/bet', { amount: betAmount, direction, force_result: won })
-      if (r.data.won) {
+      // Отправляем реальный результат на бэкенд для начисления
+      const r = await api.post('/api/trading/result', { amount: betAmount, won })
+      if (won) {
         updateBalance(-betAmount + r.data.profit)
         setResult({ won: true, profit: r.data.profit, amount: betAmount })
         showToast(`📈 ВЫИГРЫШ +${(r.data.profit - betAmount).toFixed(4)} TON!`)
