@@ -10,6 +10,7 @@ import Wallet from './pages/Wallet/Wallet'
 import Admin from './pages/Admin/Admin'
 import Spin from './pages/Spin/Spin'
 import Games from './pages/Games/Games'
+import Trading from './pages/Trading/Trading'
 import WelcomeBonus from './components/WelcomeBonus'
 import './App.css'
 
@@ -103,6 +104,7 @@ export default function App() {
         {tab === 'wallet'    && <Wallet    user={user} />}
         {tab === 'games'     && <Games     user={user} onGame={setTab} />}
         {tab === 'spin'      && <Spin      user={user} onBack={() => setTab('games')} />}
+        {tab === 'trading'   && <Trading   user={user} onBack={() => setTab('games')} />}
         {tab === 'admin'     && <Admin     />}
       </div>
 

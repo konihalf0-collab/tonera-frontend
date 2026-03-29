@@ -1,0 +1,28 @@
+.trading-wrap{padding:12px;max-width:420px;margin:0 auto;padding-bottom:80px;}
+.trading-toast{position:fixed;top:90px;left:50%;transform:translateX(-50%);background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);border-radius:12px;padding:10px 20px;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:#00e676;white-space:nowrap;z-index:100;}
+.trading-toast.err{background:rgba(255,77,106,0.12);border-color:rgba(255,77,106,0.3);color:#ff4d6a;}
+.tr-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.tr-back{background:transparent;border:none;color:#00d4ff;font-size:20px;cursor:pointer;padding:4px;}
+.tr-title{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#e8f2ff;flex:1;}
+.tr-balance{font-family:'Orbitron',sans-serif;font-size:11px;color:#00d4ff;}
+.tr-chart-wrap{position:relative;margin-bottom:14px;background:#060f2a;border:1px solid rgba(0,212,255,0.2);border-radius:16px;overflow:hidden;}
+.tr-canvas{display:block;width:100%;}
+.tr-countdown{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Orbitron',sans-serif;font-size:36px;font-weight:900;color:#00d4ff;opacity:.8;pointer-events:none;}
+.tr-result{text-align:center;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;padding:12px;border-radius:12px;margin-bottom:14px;}
+.tr-result.win{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.3);color:#00e676;}
+.tr-result.lose{background:rgba(255,77,106,0.08);border:1px solid rgba(255,77,106,0.2);color:#ff4d6a;}
+.tr-bet-row{background:#0e1c3a;border:1px solid rgba(26,95,255,0.2);border-radius:14px;padding:14px;margin-bottom:10px;}
+.tr-bet-label{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;color:rgba(232,242,255,0.4);letter-spacing:.1em;margin-bottom:8px;}
+.tr-bet-inputs{display:flex;gap:6px;margin-bottom:10px;}
+.tr-bet-btn{flex:1;padding:8px 4px;border-radius:8px;border:1px solid rgba(26,95,255,0.3);background:#0b1630;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:rgba(232,242,255,0.5);cursor:pointer;}
+.tr-bet-btn.on{background:rgba(26,95,255,0.2);border-color:#00d4ff;color:#00d4ff;}
+.tr-custom{display:flex;align-items:center;gap:8px;}
+.tr-input{flex:1;padding:10px 14px;background:#0b1630;border:1px solid rgba(26,95,255,0.4);border-radius:10px;color:#e8f2ff;font-family:'Orbitron',sans-serif;font-size:13px;outline:none;}
+.tr-cur{font-family:'Orbitron',sans-serif;font-size:11px;color:#00d4ff;font-weight:700;}
+.tr-mult{text-align:center;font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(232,242,255,0.4);margin-bottom:12px;}
+.tr-mult span{color:#00d4ff;font-weight:700;}
+.tr-btns{display:flex;gap:10px;}
+.tr-btn{flex:1;padding:16px;border:none;border-radius:14px;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.05em;}
+.tr-btn:disabled{opacity:.5;cursor:not-allowed;}
+.tr-btn.up{background:linear-gradient(135deg,#00e676,#00b85e);color:#050a1a;box-shadow:0 4px 16px rgba(0,230,118,0.3);}
+.tr-btn.down{background:linear-gradient(135deg,#ff4d6a,#cc0033);color:#fff;box-shadow:0 4px 16px rgba(255,77,106,0.3);}
