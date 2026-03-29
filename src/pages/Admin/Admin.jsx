@@ -319,6 +319,12 @@ export default function Admin() {
             <div className="astat-card fee"><div className="astat-val">{parseFloat(stats.task_fee_earned||0).toFixed(4)}</div><div className="astat-lbl">Комиссия заданий</div></div>
           </div>
 
+          <div className="stats-section-title">🎰 СПИН</div>
+          <div className="stats-cards">
+            <div className="astat-card"><div className="astat-val">{stats.total_spins||0}</div><div className="astat-lbl">Всего спинов</div></div>
+            <div className="astat-card fee"><div className="astat-val">{parseFloat(stats.spin_revenue||0).toFixed(4)}</div><div className="astat-lbl">Доход со спинов</div></div>
+          </div>
+
           <div className="stats-section-title">💰 ФИНАНСЫ ПРОЕКТА</div>
           <div className="stats-cards">
             <div className="astat-card green"><div className="astat-val">+{parseFloat(stats.total_deposited||0).toFixed(2)}</div><div className="astat-lbl">Пополнено</div></div>
