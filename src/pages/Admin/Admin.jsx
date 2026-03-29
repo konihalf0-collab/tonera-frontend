@@ -323,6 +323,7 @@ export default function Admin() {
           <div className="stats-cards">
             <div className="astat-card"><div className="astat-val">{stats.total_spins||0}</div><div className="astat-lbl">Всего спинов</div></div>
             <div className="astat-card fee"><div className="astat-val">{parseFloat(stats.spin_revenue||0).toFixed(4)}</div><div className="astat-lbl">Доход со спинов</div></div>
+            <div className="astat-card green"><div className="astat-val">{parseFloat(stats.spin_profit||0).toFixed(4)}</div><div className="astat-lbl">Чистая прибыль</div></div>
             <div className="astat-card" style={{borderColor:'rgba(255,179,0,0.3)',background:'rgba(255,179,0,0.05)'}}><div className="astat-val" style={{color:'#ffb300'}}>{parseFloat(stats.current_jackpot||0).toFixed(4)}</div><div className="astat-lbl">Джекпот сейчас</div></div>
             <div className="astat-card green"><div className="astat-val">{parseFloat(stats.spin_pool||0).toFixed(4)}</div><div className="astat-lbl">Пул выплат</div></div>
           </div>
