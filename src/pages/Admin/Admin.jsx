@@ -523,6 +523,13 @@ export default function Admin() {
               <button className="save-btn" onClick={()=>saveSetting('spin_jackpot_fee')}>{saving==='spin_jackpot_fee'?'...':'СОХР'}</button>
             </div>
           </div>
+          <div className="setting-item">
+            <div className="setting-label">% чистой прибыли проекту</div>
+            <div className="setting-row">
+              <input className="setting-input" type="number" step="1" value={settings['spin_profit_fee']||''} onChange={e=>setSettings(p=>({...p,spin_profit_fee:e.target.value}))}/>
+              <button className="save-btn" onClick={()=>saveSetting('spin_profit_fee')}>{saving==='spin_profit_fee'?'...':'СОХР'}</button>
+            </div>
+          </div>
           <div className="stats-section-title" style={{marginTop:16}}>СЕКТОРЫ</div>
           {spinSectors.map((s,i) => (
             <div key={i} className="sector-item">
