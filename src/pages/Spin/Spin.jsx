@@ -5,7 +5,7 @@ import './Spin.css'
 
 const COLORS = ['#1a2a4a','#0d3a1a','#1a1a3a','#0a2a3a','#1a3a0a','#2a1a3a','#3a2a0a','#0a3a2a']
 
-export default function Spin({ user }) {
+export default function Spin({ user, onBack }) {
   const { updateBalance } = useUserStore()
   const [spinning, setSpinning] = useState(false)
   const [rotation, setRotation] = useState(0)
@@ -152,6 +152,7 @@ export default function Spin({ user }) {
     <div className="spin-wrap">
       {toast && <div className={`spin-toast ${toastErr ? 'err' : ''}`}>{toast}</div>}
 
+      {onBack && <button className="spin-back" onClick={onBack}>← ИГРЫ</button>}
       <div className="spin-title">🎰 КОЛЕСО ФОРТУНЫ</div>
 
       <div className="spin-jackpot-card">
