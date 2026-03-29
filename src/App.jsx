@@ -40,7 +40,9 @@ export default function App() {
   const goCreate = () => { setTasksView('create'); setTab('tasks') }
   const goMyTasks = () => { setTasksView('my'); setTab('tasks') }
   const isAdmin = Number(user?.telegram_id) === ADMIN_ID
-  const visibleTabs = TABS.filter(t => (t.id !== 'admin' || isAdmin) && t.id !== 'customer' && t.id !== 'spin' || t.id === 'spin')
+  const [spinEnabled, setSpinEnabled] = useState(true)
+  useEffect(() => { api.get('/api/spin/info').then(r => setSpinEnabled(r.data?.spin_enabled !== '0')).catch(()=>{}) }, [])
+  const visibleTabs = TABS.filter(t => (t.id !== 'admin' || isAdmin) && t.id !== 'customer' && (t.id !== 'spin' || spinEnabled))
   const balance = parseFloat(user?.balance_ton ?? 0)
 
   return (
