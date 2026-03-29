@@ -27,6 +27,7 @@ const TABS = [
 export default function App() {
   const [tab, setTab] = useState('home')
   const [tasksView, setTasksView] = useState('list')
+  const [blockMsg, setBlockMsg] = useState(null)
   const { user, setUser } = useUserStore()
 
   useEffect(() => {
@@ -34,7 +35,11 @@ export default function App() {
     if (tg) { tg.ready(); tg.expand() }
     authLogin().then(r => {
       setUser(r.data.user)
-    }).catch(() => setUser({ balance_ton: 0, username: 'Пользователь' }))
+    }).catch(e => {
+      const msg = e?.response?.data?.error
+      if (msg) setBlockMsg(msg)
+      else setUser({ balance_ton: 0, username: 'Пользователь' })
+    })
   }, [])
 
   const goCreate = () => { setTasksView('create'); setTab('tasks') }
@@ -44,6 +49,16 @@ export default function App() {
   useEffect(() => { api.get('/api/spin/info').then(r => setSpinEnabled(r.data?.spin_enabled !== '0')).catch(()=>{}) }, [])
   const visibleTabs = TABS.filter(t => (t.id !== 'admin' || isAdmin) && t.id !== 'customer' && (t.id !== 'spin' || spinEnabled))
   const balance = parseFloat(user?.balance_ton ?? 0)
+
+  if (blockMsg) return (
+    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100vh',padding:24,textAlign:'center',background:'#050a1a'}}>
+      <div style={{fontSize:52,marginBottom:16}}>{blockMsg.includes('работ') ? '🔧' : '🚫'}</div>
+      <div style={{fontFamily:'Orbitron,sans-serif',fontSize:14,fontWeight:700,color:'#e8f2ff',marginBottom:8,letterSpacing:'.05em'}}>
+        {blockMsg.includes('работ') ? 'ТЕХНИЧЕСКИЕ РАБОТЫ' : 'ДОСТУП ОГРАНИЧЕН'}
+      </div>
+      <div style={{fontFamily:'DM Sans,sans-serif',fontSize:13,color:'rgba(232,242,255,0.5)',lineHeight:1.6}}>{blockMsg}</div>
+    </div>
+  )
 
   return (
     <div className="app">
