@@ -14,6 +14,7 @@ export default function Spin({ user }) {
   const [jackpot, setJackpot] = useState(0)
   const [sectors, setSectors] = useState([])
   const [toast, setToast] = useState('')
+  const [history, setHistory] = useState([])
   const [toastErr, setToastErr] = useState(false)
   const canvasRef = useRef(null)
   const balance = parseFloat(user?.balance_ton ?? 0)
@@ -24,6 +25,8 @@ export default function Spin({ user }) {
       setJackpot(parseFloat(r.data.spin_jackpot || 0))
       setSectors(r.data.sectors || [])
     }).catch(() => {})
+
+    api.get('/api/spin/history').then(r => setHistory(r.data || [])).catch(() => {})
 
     // Обновляем джекпот каждые 10 секунд
     const t = setInterval(() => {
@@ -172,12 +175,16 @@ export default function Spin({ user }) {
       </button>
 
       <div className="spin-sectors">
-        <div className="ss-title">ПРИЗЫ</div>
-        {sectors.map((s, i) => (
+        <div className="ss-title">🏆 ПОСЛЕДНИЕ ВЫИГРЫШИ</div>
+        {history.length === 0 && <div style={{textAlign:'center',color:'rgba(232,242,255,0.3)',fontFamily:'DM Sans',fontSize:13,padding:'10px 0'}}>Пока нет выигрышей</div>}
+        {history.map((h, i) => (
           <div key={i} className="ss-item">
-            <div className="ss-dot" style={{background: s.type==='jackpot'?'#ffb300':s.type==='nothing'?'#1a1a2a':COLORS[i%COLORS.length]}}/>
-            <span>{s.label}</span>
-            <span className="ss-chance">{s.chance}%</span>
+            <div className="sh-avatar">{(h.username||h.first_name||'?')[0].toUpperCase()}</div>
+            <div style={{flex:1}}>
+              <div style={{fontFamily:'DM Sans,sans-serif',fontSize:13,color:'#e8f2ff'}}>{h.username ? '@'+h.username : h.first_name}</div>
+              <div style={{fontFamily:'Orbitron,sans-serif',fontSize:9,color:'rgba(232,242,255,0.3)',marginTop:2}}>{new Date(h.created_at).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+            </div>
+            <div style={{fontFamily:'Orbitron,sans-serif',fontSize:12,fontWeight:700,color:'#00e676'}}>+{parseFloat(h.amount).toFixed(4)} TON</div>
           </div>
         ))}
       </div>
