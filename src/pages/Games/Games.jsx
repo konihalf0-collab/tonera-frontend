@@ -1,7 +1,7 @@
 import './Games.css'
 
 const GAMES = [
-  { id: 'spin', icon: '🎰', title: 'КОЛЕСО ФОРТУНЫ', desc: 'Крути колесо и выигрывай TON' },
+  { id: 'spin', icon: '🎡', title: 'КОЛЕСО ФОРТУНЫ', desc: 'Крути колесо и выигрывай TON' },
 ]
 
 export default function Games({ onSelectGame }) {
