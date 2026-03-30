@@ -91,27 +91,34 @@ export default function Trading({ user, onBack }) {
     wsRef.current?.close()
     const ws = new WebSocket(`wss://stream.bybit.com/v5/public/spot`)
     wsRef.current = ws
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ op: 'subscribe', args: [`kline.${tf.value}.TONUSDT`] }))
+    }
     ws.onmessage = (e) => {
-      const d = JSON.parse(e.data), k = d.k
-      const candle = {
-        open: parseFloat(kk.o), high: parseFloat(kk.h),
-        low: parseFloat(kk.l), close: parseFloat(kk.c),
-        isGreen: parseFloat(kk.c) >= parseFloat(kk.o), time: parseInt(kk.t)
-      }
-      const price = parseFloat(kk.c)
-      setCurrentPrice(price)
-      const arr = [...candlesRef.current]
-      if (kk.x) { arr.push(candle); if (arr.length > 300) arr.shift() }
-      else arr[arr.length - 1] = candle
-      candlesRef.current = arr
-      setCandles([...arr])
+      const msg = JSON.parse(e.data)
+      if (msg.topic && msg.data?.[0]) {
+        const k = msg.data[0]
+        const candle = {
+          open: parseFloat(k.open), high: parseFloat(k.high),
+          low: parseFloat(k.low), close: parseFloat(k.close),
+          isGreen: parseFloat(k.close) >= parseFloat(k.open),
+          time: parseInt(k.start)
+        }
+        const price = parseFloat(k.close)
+        setCurrentPrice(price)
+        const arr = [...candlesRef.current]
+        if (k.confirm) { arr.push(candle); if (arr.length > 300) arr.shift() }
+        else arr[arr.length - 1] = candle
+        candlesRef.current = arr
+        setCandles([...arr])
 
-      if (betRef.current && Date.now() >= betRef.current.endTime) {
-        const b = betRef.current
-        const diff = Math.abs(price - b.startPrice)
-        const won = diff < 0.0001 ? null : b.direction === 'up' ? price > b.startPrice : price < b.startPrice
-        betRef.current = null; setBet(null)
-        finishBet(won, b.amount)
+        if (betRef.current && Date.now() >= betRef.current.endTime) {
+          const b = betRef.current
+          const diff = Math.abs(price - b.startPrice)
+          const won = diff < 0.0001 ? null : b.direction === 'up' ? price > b.startPrice : price < b.startPrice
+          betRef.current = null; setBet(null)
+          finishBet(won, b.amount)
+        }
       }
     }
     ws.onerror = ws.onclose = () => setTimeout(connectWS, 3000)
