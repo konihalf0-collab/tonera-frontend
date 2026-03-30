@@ -51,7 +51,7 @@ export default function App() {
   const [spinEnabled, setSpinEnabled] = useState(true)
   const [tradingStatus, setTradingStatus] = useState('1') // 0=откл,1=вкл,2=тех
   useEffect(() => { api.get('/api/spin/info').then(r => setSpinEnabled(r.data?.spin_enabled !== '0')).catch(()=>{}) }, [])
-  useEffect(() => { api.get('/api/trading/info').then(r => setTradingStatus(r.data?.trading_enabled || '1')).catch(()=>{}) }, [])
+  useEffect(() => { api.get('/api/trading/info').then(r => setTradingStatus(String(r.data?.trading_enabled ?? '1'))).catch(()=>{}) }, [])
   const visibleTabs = TABS.filter(t => (t.id !== 'admin' || isAdmin) && t.id !== 'customer' && (t.id !== 'games' || true))
   const balance = parseFloat(user?.balance_ton ?? 0)
 
