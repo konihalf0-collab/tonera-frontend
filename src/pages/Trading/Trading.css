@@ -61,3 +61,5 @@
 .tr-hist-amt.win{color:#26a69a;}
 .tr-hist-amt.lose{color:#ef5350;}
 .tr-hist-amt.refund{color:#00d4ff;}
+.tr-hist-right{text-align:right;}
+.tr-hist-profit{font-family:'DM Sans',sans-serif;font-size:10px;color:rgba(232,242,255,0.35);margin-top:2px;}
