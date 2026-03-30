@@ -325,6 +325,8 @@ export default function Trading({ user, onBack }) {
         setResult({ won: null, amount: betAmount })
         showToast('🔄 Цена не изменилась — возврат средств')
         await api.post('/api/trading/result', { amount: betAmount, won: null })
+        // Перезагружаем конфиг
+        api.get('/api/trading/info').then(r => setConfig(r.data)).catch(() => {})
         return
       }
       const r = await api.post('/api/trading/result', { amount: betAmount, won })
@@ -338,7 +340,16 @@ export default function Trading({ user, onBack }) {
         showToast('📉 Не угадал', true)
       }
       loadHistory()
-    } catch {}
+      // Перезагружаем конфиг — если банк пустой трейдинг отключится
+      api.get('/api/trading/info').then(r => setConfig(r.data)).catch(() => {})
+    } catch (e) {
+      if (e?.response?.data?.disabled) {
+        setConfig(c => ({...c, trading_enabled: '0'}))
+        showToast('⚠️ Трейдинг отключён — банк пуст', true)
+      } else {
+        showToast(e?.response?.data?.error || 'Ошибка', true)
+      }
+    }
   }
 
   const showToast = (msg, err=false) => {
