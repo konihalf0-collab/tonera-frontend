@@ -216,8 +216,16 @@ export default function Trading({ user, onBack }) {
     // Линия входа
     if (bet) {
       const entryY = toY(bet.startPrice)
-      const col = bet.direction === 'up' ? '#00e676' : '#ff4d6a'
-      const entryX = chartW - rightPad // последняя свеча
+      const entryX = chartW - rightPad
+
+      // Цвет зависит от текущей цены vs цена входа
+      const curPrice = candlesRef.current[candlesRef.current.length - 1]?.close || bet.startPrice
+      const diff = curPrice - bet.startPrice
+      let col
+      if (Math.abs(diff) < 0.0001) col = '#888888' // равная — серый
+      else if (bet.direction === 'up') col = diff > 0 ? '#26a69a' : '#ef5350'
+      else col = diff < 0 ? '#26a69a' : '#ef5350'
+
       ctx.strokeStyle = col
       ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5
       ctx.beginPath(); ctx.moveTo(0, entryY); ctx.lineTo(chartW, entryY); ctx.stroke()
@@ -228,14 +236,16 @@ export default function Trading({ user, onBack }) {
       ctx.fillStyle = col; ctx.fill()
       ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke()
 
-      // Метка
-      const lbl = `${bet.direction === 'up' ? '▲' : '▼'} ${countdown}с`
+      // Метка — ВЕРХ/НИЗ + таймер
+      const dirLabel = bet.direction === 'up' ? 'ВЕРХ' : 'НИЗ'
+      const lbl = `${dirLabel} ${countdown}с`
       ctx.font = 'bold 10px Orbitron, sans-serif'
       const tw = ctx.measureText(lbl).width
-      ctx.fillStyle = col + 'cc'
-      ctx.beginPath(); ctx.roundRect(entryX - tw - 20, entryY - 11, tw + 8, 15, 4); ctx.fill()
+      const lx = Math.max(4, entryX - tw - 20)
+      ctx.fillStyle = col + 'dd'
+      ctx.beginPath(); ctx.roundRect(lx - 2, entryY - 12, tw + 10, 16, 4); ctx.fill()
       ctx.fillStyle = '#fff'; ctx.textAlign = 'left'
-      ctx.fillText(lbl, entryX - tw - 16, entryY + 1)
+      ctx.fillText(lbl, lx + 3, entryY + 1)
     }
 
     // Текущая цена
