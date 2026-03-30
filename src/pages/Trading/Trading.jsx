@@ -430,9 +430,27 @@ export default function Trading({ user, onBack }) {
               onClick={()=>setBetTime(bt)} disabled={!!bet}>{bt.label}</button>
           ))}
         </div>
+        {(() => {
+          const val = parseFloat(amount) || 0
+          const pct = parseFloat(config.trading_multiplier) || 90
+          const multiplier = pct > 10 ? 1 + pct / 100 : pct
+          const payout = val * multiplier
+          const profit = payout - val
+          return val > 0 ? (
+            <div className="tr-payout-info">
+              <div className="tr-payout-row">
+                <span>Ставка</span><span>{val.toFixed(4)} TON</span>
+              </div>
+              <div className="tr-payout-row">
+                <span>Профит при выигрыше</span><span className="green">+{profit.toFixed(4)} TON</span>
+              </div>
+              <div className="tr-payout-row total">
+                <span>Итого при выигрыше</span><span className="green">{payout.toFixed(4)} TON</span>
+              </div>
+            </div>
+          ) : null
+        })()}
       </div>
-
-      <div className="tr-mult">x{parseFloat(config.trading_multiplier).toFixed(1)} выплата</div>
 
       <div className="tr-btns">
         <button className="tr-btn up" onClick={()=>handleBet('up')} disabled={!!bet}>📈 ВВЕРХ</button>
