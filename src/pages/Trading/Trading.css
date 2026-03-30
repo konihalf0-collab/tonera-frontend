@@ -72,3 +72,7 @@
 .tr-maint-icon{font-size:52px;margin-bottom:16px;}
 .tr-maint-title{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#e8f2ff;letter-spacing:.05em;margin-bottom:10px;}
 .tr-maint-text{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(232,242,255,0.45);line-height:1.6;}
+.tr-maintenance{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;}
+.tr-maint-icon{font-size:52px;margin-bottom:16px;}
+.tr-maint-title{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#e8f2ff;letter-spacing:.05em;margin-bottom:10px;}
+.tr-maint-text{font-family:'DM Sans',sans-serif;font-size:13px;color:rgba(232,242,255,0.45);line-height:1.6;}

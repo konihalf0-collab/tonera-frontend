@@ -26,7 +26,8 @@ export default function Trading({ user, onBack }) {
   const [currentPrice, setCurrentPrice] = useState(null)
   const [bet, setBet] = useState(null)
   const [result, setResult] = useState(null)
-  const [config, setConfig] = useState({ trading_multiplier: 1.9, trading_min_bet: 0.01 })
+  const [config, setConfig] = useState({ trading_multiplier: 1.9, trading_min_bet: 0.01, trading_enabled: '1' })
+  const [configLoaded, setConfigLoaded] = useState(false)
   const [countdown, setCountdown] = useState(0)
   const [toast, setToast] = useState('')
   const [toastErr, setToastErr] = useState(false)
@@ -48,7 +49,7 @@ export default function Trading({ user, onBack }) {
   const balance = parseFloat(user?.balance_ton ?? 0)
 
   useEffect(() => {
-    api.get('/api/trading/info').then(r => setConfig(r.data)).catch(() => {})
+    api.get('/api/trading/info').then(r => { setConfig(r.data); setConfigLoaded(true) }).catch(() => { setConfigLoaded(true) })
     loadHistory()
   }, [])
 
@@ -374,6 +375,24 @@ export default function Trading({ user, onBack }) {
     }), 1000)
     timerRef.current = t
   }
+
+  if (!configLoaded) return (
+    <div className="trading-wrap">
+      <div className="tr-header"><button className="tr-back" onClick={onBack}>←</button><div className="tr-title">💎 TON/USDT</div></div>
+      <div className="tr-maintenance"><div className="tr-maint-icon">⏳</div><div className="tr-maint-text">Загрузка...</div></div>
+    </div>
+  )
+
+  if (config.trading_enabled === '0') return (
+    <div className="trading-wrap">
+      <div className="tr-header"><button className="tr-back" onClick={onBack}>←</button><div className="tr-title">💎 TON/USDT</div></div>
+      <div className="tr-maintenance">
+        <div className="tr-maint-icon">🔧</div>
+        <div className="tr-maint-title">ТЕХНИЧЕСКИЕ РАБОТЫ</div>
+        <div className="tr-maint-text">Трейдинг временно недоступен.<br/>Скоро вернёмся!</div>
+      </div>
+    </div>
+  )
 
   return (
     <div className="trading-wrap">
