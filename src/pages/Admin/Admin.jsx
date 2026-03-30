@@ -14,8 +14,9 @@ const SETTING_GROUPS = [
     settings: [
       { key: 'trading_enabled',    label: 'Включён (1/0)' },
       { key: 'trading_multiplier', label: 'Процент выплаты (%, напр. 90)' },
-      { key: 'trading_bank',       label: 'Банк трейдинга (TON)' },
-      { key: 'trading_profit_fee', label: 'Чистая прибыль с каждой ставки (%)' },
+      { key: 'trading_bank',        label: 'Банк трейдинга (TON)' },
+      { key: 'trading_commission',  label: 'Комиссия с каждой ставки (%)' },
+      { key: 'trading_profit_fee',  label: '% с комиссии — чистая прибыль' },
     ]
   },
   {
