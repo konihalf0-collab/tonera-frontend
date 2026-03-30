@@ -65,7 +65,7 @@ export default function Trading({ user, onBack }) {
 
   const loadCandles = async () => {
     try {
-      const r = await fetch(`https://api.bybit.com/v5/market/kline?category=spot&symbol=TONUSDT&interval=${tf.value}&limit=200`)
+      const r = await fetch(`https://api.bybit.com/v5/market/kline?category=spot&symbol=BTCUSDT&interval=${tf.value}&limit=200`)
       const data = await r.json()
       const raw = (data.result?.list || []).reverse()
       const c = raw.map(k => ({
@@ -181,7 +181,7 @@ export default function Trading({ user, onBack }) {
       ctx.fillStyle = 'rgba(232,242,255,0.3)'
       ctx.font = '8px Orbitron, sans-serif'
       ctx.textAlign = 'left'
-      ctx.fillText('$' + p.toFixed(3), chartW + 3, y + 3)
+      ctx.fillText('$' + Math.round(p).toLocaleString('en'), chartW + 3, y + 3)
     }
 
     // Рисуем свечи справа налево
@@ -258,7 +258,7 @@ export default function Trading({ user, onBack }) {
       ctx.setLineDash([2, 4]); ctx.lineWidth = 1
       ctx.beginPath(); ctx.moveTo(0, priceY); ctx.lineTo(chartW, priceY); ctx.stroke()
       ctx.setLineDash([])
-      const ps = '$' + currentPrice.toFixed(3)
+      const ps = '$' + currentPrice.toLocaleString('en', {maximumFractionDigits:0})
       ctx.font = 'bold 9px Orbitron, sans-serif'
       const pw = ctx.measureText(ps).width
       ctx.fillStyle = col
@@ -389,14 +389,14 @@ export default function Trading({ user, onBack }) {
 
   if (!configLoaded) return (
     <div className="trading-wrap">
-      <div className="tr-header"><button className="tr-back" onClick={onBack}>←</button><div className="tr-title">💎 TON/USDT</div></div>
+      <div className="tr-header"><button className="tr-back" onClick={onBack}>←</button><div className="tr-title">₿ BTC/USDT</div></div>
       <div className="tr-maintenance"><div className="tr-maint-icon">⏳</div><div className="tr-maint-text">Загрузка...</div></div>
     </div>
   )
 
   if (config.trading_enabled === '0') return (
     <div className="trading-wrap">
-      <div className="tr-header"><button className="tr-back" onClick={onBack}>←</button><div className="tr-title">💎 TON/USDT</div></div>
+      <div className="tr-header"><button className="tr-back" onClick={onBack}>←</button><div className="tr-title">₿ BTC/USDT</div></div>
       <div className="tr-maintenance">
         <div className="tr-maint-icon">🚫</div>
         <div className="tr-maint-title">ТРЕЙДИНГ ОТКЛЮЧЁН</div>
@@ -407,7 +407,7 @@ export default function Trading({ user, onBack }) {
 
   if (config.trading_enabled === '2') return (
     <div className="trading-wrap">
-      <div className="tr-header"><button className="tr-back" onClick={onBack}>←</button><div className="tr-title">💎 TON/USDT</div></div>
+      <div className="tr-header"><button className="tr-back" onClick={onBack}>←</button><div className="tr-title">₿ BTC/USDT</div></div>
       <div className="tr-maintenance">
         <div className="tr-maint-icon">🔧</div>
         <div className="tr-maint-title">ТЕХНИЧЕСКИЕ РАБОТЫ</div>
@@ -430,7 +430,7 @@ export default function Trading({ user, onBack }) {
           <button key={t.value} className={`tr-tf-btn ${tf.value===t.value?'on':''}`}
             onClick={() => { setTf(t); offsetXRef.current = 0 }}>{t.label}</button>
         ))}
-        {currentPrice && <span className="tr-live-price">${currentPrice.toFixed(3)}</span>}
+        {currentPrice && <span className="tr-live-price">${currentPrice.toLocaleString('en', {maximumFractionDigits:0})}</span>}
       </div>
 
       <div className="tr-controls-row">

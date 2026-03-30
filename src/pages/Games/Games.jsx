@@ -2,7 +2,7 @@ import './Games.css'
 
 const GAMES = [
   { id: 'spin',    icon: '🎡', title: 'КОЛЕСО ФОРТУНЫ', desc: 'Крути колесо и выигрывай TON' },
-  { id: 'trading', icon: '📈', title: 'ТРЕЙДИНГ',       desc: 'Угадай движение цены TON' },
+  { id: 'trading', icon: '₿',  title: 'ТРЕЙДИНГ BTC',   desc: 'Угадай движение цены Bitcoin' },
 ]
 
 export default function Games({ onGame, tradingStatus = '1' }) {
