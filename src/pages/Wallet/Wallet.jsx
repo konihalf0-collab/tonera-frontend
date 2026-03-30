@@ -23,25 +23,44 @@ const TX_LABELS = {
 
 function getTxInfo(tx) {
   const lbl = tx.label || ''
-  const info = TX_LABELS[tx.type] || { icon: '💫', label: '' }
+  const amt = parseFloat(tx.amount)
   // Трейдинг
   if (tx.type === 'trading') {
-    if (lbl.includes('refund') && lbl.includes('tech')) return { icon: '↩️', label: 'Возврат (техн. сбой)', color: 'gray' }
-    if (lbl.includes('refund')) return { icon: '↩️', label: 'Возврат ставки', color: 'gray' }
-    if (lbl.startsWith('📈')) return { icon: '📈', label: 'Трейдинг — выигрыш', color: 'win' }
-    if (lbl.startsWith('📉')) return { icon: '📉', label: 'Трейдинг — проигрыш', color: 'lose' }
+    if (lbl.includes('refund') && lbl.includes('tech')) return { section: 'Трейдинг', label: 'Возврат — техн. сбой', color: 'gray' }
+    if (lbl.includes('refund')) return { section: 'Трейдинг', label: 'Возврат ставки', color: 'gray' }
+    if (amt > 0) return { section: 'Трейдинг', label: 'Выигрыш', color: 'win' }
+    return { section: 'Трейдинг', label: 'Проигрыш', color: 'lose' }
   }
+  if (tx.type === 'trading_profit') return { section: 'Трейдинг', label: 'Прибыль проекта', color: 'profit', isProfit: true }
   // Спин
   if (tx.type === 'spin_result') {
-    if (lbl.includes('Ничего') || parseFloat(tx.amount) < 0) return { icon: '🎰', label: 'Спин — не повезло', color: 'lose' }
-    if (lbl.includes('ДЖЕКПОТ')) return { icon: '🎰', label: 'Спин — ДЖЕКПОТ!', color: 'win' }
-    if (parseFloat(tx.amount) > 0) return { icon: '🎰', label: 'Спин — выигрыш', color: 'win' }
+    if (lbl.includes('Ничего') || amt < 0) return { section: 'Колесо фортуны', label: 'Не повезло', color: 'lose' }
+    if (lbl.includes('ДЖЕКПОТ')) return { section: 'Колесо фортуны', label: 'ДЖЕКПОТ!', color: 'win' }
+    return { section: 'Колесо фортуны', label: 'Выигрыш', color: 'win' }
   }
-  if (lbl.startsWith('tx:') || lbl.startsWith('Пополнение через')) return { icon: '⬇️', label: 'Пополнение через TON', color: '' }
-  if (lbl.includes('Реф. бонус')) return { icon: '👥', label: 'Реф. бонус', color: '' }
-  if (lbl.includes('Комиссия трейдинг')) return { icon: '💹', label: 'Комиссия трейдинга', color: '' }
-  if (lbl.includes('Прибыль трейдинг')) return { icon: '💹', label: 'Прибыль трейдинга', color: '' }
-  return { ...info, color: '' }
+  if (tx.type === 'spin_profit') return { section: 'Колесо фортуны', label: 'Прибыль проекта', color: 'profit', isProfit: true }
+  // Стейкинг
+  if (tx.type === 'fee' && lbl.includes('стейк')) return { section: 'Стейкинг', label: 'Комиссия вывода', color: 'profit', isProfit: true }
+  if (tx.type === 'stake') return { section: 'Стейкинг', label: 'Пополнение стейка', color: 'lose' }
+  if (tx.type === 'reinvest') return { section: 'Стейкинг', label: 'Реинвестирование', color: 'lose' }
+  if (tx.type === 'collect') return { section: 'Стейкинг', label: 'Сбор дохода', color: 'win' }
+  if (tx.type === 'reward' && lbl.includes('стейк')) return { section: 'Стейкинг', label: 'Доход', color: 'win' }
+  // Задания
+  if (tx.type === 'task_fee') return { section: 'Задания', label: 'Комиссия проекта', color: 'profit', isProfit: true }
+  if (tx.type === 'task') return { section: 'Задания', label: 'Оплата задания', color: 'lose' }
+  if (tx.type === 'reward' && lbl.includes('Задание')) return { section: 'Задания', label: 'Выполнено задание', color: 'win' }
+  // Рефералы
+  if (tx.type === 'ref_task') return { section: 'Рефералы', label: 'Бонус с задания', color: 'win' }
+  if (tx.type === 'ref_deposit') return { section: 'Рефералы', label: 'Бонус с пополнения', color: 'win' }
+  if (lbl.includes('Реф. бонус')) return { section: 'Рефералы', label: 'Реферальный бонус', color: 'win' }
+  // Кошелёк
+  if (tx.type === 'deposit' || lbl.startsWith('tx:') || lbl.includes('Пополнение через')) return { section: 'Кошелёк', label: 'Пополнение', color: 'win' }
+  if (tx.type === 'withdraw') return { section: 'Кошелёк', label: 'Вывод средств', color: 'lose' }
+  // Бонус
+  if (tx.type === 'bonus') return { section: 'Бонус', label: 'Приветственный бонус', color: 'win' }
+  // Остальное
+  if (tx.type === 'reward') return { section: 'Бонус', label: 'Награда', color: 'win' }
+  return { section: '—', label: lbl || 'Транзакция', color: amt > 0 ? 'win' : amt < 0 ? 'lose' : 'gray' }
 }
 
 export default function Wallet({ user }) {
@@ -191,11 +210,11 @@ export default function Wallet({ user }) {
           const info = getTxInfo(tx)
           const isPos = amt > 0
           const isNeg = amt < 0
-          const colorClass = info.color === 'win' ? 'win' : info.color === 'lose' ? 'lose' : info.color === 'gray' ? 'gray' : isPos ? 'win' : isNeg ? 'lose' : 'gray'
+          const colorClass = info.color === 'profit' ? 'profit' : info.color === 'win' ? 'win' : info.color === 'lose' ? 'lose' : info.color === 'gray' ? 'gray' : isPos ? 'win' : isNeg ? 'lose' : 'gray'
           return (
             <div className={`tx-item2 ${colorClass}`} key={tx.id}>
-              <div className={`tx-badge2 ${colorClass}`}>{info.icon}</div>
               <div className="tx-info2">
+                <div className="tx-section2">{info.section}{info.isProfit && <span className="tx-profit-badge">ПРИБЫЛЬ</span>}</div>
                 <div className="tx-name2">{info.label}</div>
                 <div className="tx-date2">{new Date(tx.created_at || tx.date).toLocaleDateString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
               </div>

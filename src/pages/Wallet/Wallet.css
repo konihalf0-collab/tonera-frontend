@@ -64,3 +64,11 @@
 .tx-amt2.win{color:#26a69a;}
 .tx-amt2.lose{color:#ef5350;}
 .tx-amt2.gray{color:#888;}
+.tx-section2{font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;letter-spacing:.1em;margin-bottom:2px;opacity:.5;}
+.tx-item2.win .tx-section2{color:#26a69a;}
+.tx-item2.lose .tx-section2{color:#ef5350;}
+.tx-item2.gray .tx-section2{color:#888;}
+.tx-item2.profit{background:rgba(255,179,0,0.06);border-color:rgba(255,179,0,0.2);}
+.tx-item2.profit .tx-section2{color:#ffb300;}
+.tx-amt2.profit{color:#ffb300;}
+.tx-profit-badge{margin-left:6px;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;color:#ffb300;background:rgba(255,179,0,0.12);border:1px solid rgba(255,179,0,0.3);border-radius:4px;padding:1px 5px;letter-spacing:.06em;vertical-align:middle;}
