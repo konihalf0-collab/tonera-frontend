@@ -44,7 +44,7 @@
 }
 
 /* CONTENT */
-.app-content{flex:1;overflow:hidden;position:relative;}
+.app-content{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;}
 
 /* BOTTOM NAV */
 .bottom-nav{
