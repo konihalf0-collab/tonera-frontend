@@ -43,7 +43,10 @@ function getTxInfo(tx) {
   if (tx.type === 'fee' && lbl.includes('стейк')) return { section: 'Стейкинг', label: 'Комиссия вывода', color: 'profit', isProfit: true }
   if (tx.type === 'stake') return { section: 'Стейкинг', label: 'Пополнение стейка', color: 'lose' }
   if (tx.type === 'reinvest') return { section: 'Стейкинг', label: 'Реинвестирование', color: 'lose' }
-  if (tx.type === 'collect') return { section: 'Стейкинг', label: 'Сбор дохода', color: 'win' }
+  if (tx.type === 'collect') {
+    if (lbl.includes('Вывод')) return { section: 'Стейкинг', label: lbl, color: 'win' }
+    return { section: 'Стейкинг', label: 'Сбор дохода', color: 'win' }
+  }
   if (tx.type === 'reward' && lbl.includes('стейк')) return { section: 'Стейкинг', label: 'Доход', color: 'win' }
   // Задания
   if (tx.type === 'task_fee') return { section: 'Задания', label: 'Комиссия проекта', color: 'profit', isProfit: true }
